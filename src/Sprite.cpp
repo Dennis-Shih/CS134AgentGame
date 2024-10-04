@@ -1,9 +1,7 @@
 #include "Sprite.h"
 
 
-//Rotate sprite towards the player
-
-
+//Rotate agent towards the player
 void Sprite::rotTowardsPlayer(const glm::vec3 p) {
 
     glm::vec3 direction = glm::normalize(p - pos);
@@ -34,7 +32,7 @@ void Sprite::rotTowardsPlayer(const glm::vec3 p) {
 
 
 void Sprite::update(){
-    velocity = glm::vec3(sin(glm::radians(-rot)), cos(glm::radians(-rot)), 0);
+    velocity= glm::normalize(glm::vec3(sin(glm::radians(-rot)), cos(glm::radians(-rot)), 0));
 }
 
 

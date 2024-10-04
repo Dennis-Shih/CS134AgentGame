@@ -72,6 +72,7 @@ public:
 	bool bSelected = false;
 	bool bShowImage = false;
     //glm::vec3 forward;
+    float speed;
 	glm::vec3 velocity = glm::vec3(0, 0, 0);
 	//float rotationSpeed = 0.0;
     float rotationSpeed = 0.0;

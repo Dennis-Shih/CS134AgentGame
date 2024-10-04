@@ -122,7 +122,8 @@ void Emitter::init() {
 	rate = 1;    // sprites/sec
 	haveChildImage = false;
 	haveImage = false;
-	velocity = ofVec3f(0, -200, 0);
+    
+	//velocity = ofVec3f(0, -200, 0);
 	drawable = true;
 	width = 50;
 	height = 50;
@@ -202,16 +203,12 @@ void Emitter::update() {
 	
 }
 
-
+//move sprite along rotation vector
 void Emitter::moveSprite(Sprite *sprite) {
-    sprite->pos += (sprite->velocity / ofGetFrameRate()) / 4;
     
-    //
-    
-    
-    
-    //sprite->rot += sprite->rotationSpeed;
-    
+    sprite->pos += (sprite->velocity * -sprite->speed / ofGetFrameRate()) / 4;
+    //sprite->pos += (sprite->velocity / ofGetFrameRate()) / 4;
+
 }
 
 
@@ -221,10 +218,12 @@ void Emitter::moveSprite(Sprite *sprite) {
 void Emitter::spawnSprite() {
 	Sprite sprite;
 	if (haveChildImage) sprite.setImage(childImage);
-	sprite.velocity = velocity;
+	//sprite.velocity = velocity;
 	sprite.lifespan = lifespan;
 	sprite.pos = pos;
 	sprite.birthtime = ofGetElapsedTimeMillis();
+    sprite.rot = ofRandom(360);
+    sprite.speed = 200;
     
 	sys->add(sprite);
 }

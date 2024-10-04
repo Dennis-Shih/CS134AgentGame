@@ -24,7 +24,7 @@ void ofApp::setup(){
     
     gui.add(player.shapeToggle.setup("Shape Toggle", false));
     gui.add(scale.setup("Scale", 1, .05, 1.0));
-    gui.add(rotationSpeed.setup("Rotation Speed (deg/Frame)", 0, 0, 10));
+    gui.add(rotationSpeed.setup("Rotation Speed (deg/Frame)", 1, 0, 10));
     
      
 }
