@@ -33,6 +33,8 @@ void Sprite::rotTowardsPlayer(const glm::vec3 p) {
 
 void Sprite::update(){
     velocity= glm::normalize(glm::vec3(sin(glm::radians(-rot)), cos(glm::radians(-rot)), 0));
+    
+    
 }
 
 

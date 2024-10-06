@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<group>
+	<Player_Scale>1</Player_Scale>
+	<Shape_Toggle>0</Shape_Toggle>
+	<Agent_Scale>1</Agent_Scale>
+	<Player_Rotation_Speed__deg_Frame_>1</Player_Rotation_Speed__deg_Frame_>
+	<Agent_Rotation_Speed__deg_Frame_>1</Agent_Rotation_Speed__deg_Frame_>
+	<Rate>1</Rate>
+	<Default_Energy_Level>5</Default_Energy_Level>
+</group>

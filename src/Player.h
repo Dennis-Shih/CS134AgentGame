@@ -20,7 +20,7 @@ class Player : public Shape {
         
         glm::vec3 forward;
         
-        
+        int nEnergy;
         float speed;
         float rotationSpeed;
         ofImage img;

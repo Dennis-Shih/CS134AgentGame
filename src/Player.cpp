@@ -29,6 +29,8 @@ Player::Player() {
     verts.push_back(glm::vec3(-1, 1, 0));
     
     scale = glm::vec3(0.8, 0.8, 1);
+    
+    nEnergy = 5;
     pos = glm::vec3(ofGetWindowWidth() / 2.0, ofGetWindowHeight() / 2.0, 0);
     speed = 3.0f;
     knockBackMult=1.25f;
@@ -61,10 +63,10 @@ void Player::draw() {
 }
 
 void Player::update() {
-    float minX=img.getWidth();
-    float maxX=ofGetWindowWidth();
-    float minY=img.getHeight();
-    float maxY=ofGetWindowHeight();
+    float minX=img.getWidth() / scale.length();
+    float maxX=ofGetWindowWidth() - minX;
+    float minY=img.getHeight() / scale.length();
+    float maxY=ofGetWindowHeight() - minY;
     
     if (rotDir<0) {
         //left
@@ -80,7 +82,7 @@ void Player::update() {
     } else if (pos.x > maxX) {
         pos.x -= knockBackMult * speed;
     }
-    if (pos.y < minY || pos.y > maxY){
+    if (pos.y < minY){
        pos.y += knockBackMult * speed;
     } else if (pos.y > maxY) {
         pos.y -= knockBackMult * speed;
@@ -101,7 +103,7 @@ glm::mat4 Player::getTransform() {
 }
 
 void Player::setup() {
-    
+    Player();
     if (img.load("images/Player1.png")) {
         cout << "image loaded" << endl;
     }

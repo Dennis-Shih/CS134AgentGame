@@ -81,6 +81,7 @@ public:
 	string name =  "UnammedSprite";
 	float width = 40;
 	float height = 40;
+    bool intersectedPlayer;
 
 	ofImage spriteImage;
 

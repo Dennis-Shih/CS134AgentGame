@@ -18,15 +18,16 @@ void ofApp::setup(){
     
     gui.setup();
     
-    gui.add(player.sliderScale.setup("Scale", 1, 0.1, 2));
+    gui.add(player.sliderScale.setup("Player Scale", 1, 0.1, 2));
     
     gui.add(player.shapeToggle.setup("Shape Toggle", false));
-    gui.add(scale.setup("Scale", 1, .05, 1.0));
+    gui.add(life.setup("Agent Life", 3000, 1, 10000));
     gui.add(pRotationSpeed.setup("Player Rotation Speed (deg/Frame)", 1, 1, 10));
     gui.add(agentRotationSpeed.setup("Agent Rotation Speed (deg/Frame)", 1, 1, 10));
-    gui.add(rate.setup("Rate", 1, 0, 10));
+    gui.add(rate.setup("Rate", 1, 1, 10));
     
-    //ofsoundstreamsettings
+    gui.add(nEnergyParam.setup("Default Energy Level", player.nEnergy, 1, 10));
+    explode.load("audio/explode.wav");
     bgm.load("audio/bgm.wav");
     bgm.setVolume(0.4);
     bgm.setLoop(true);
@@ -43,13 +44,14 @@ void ofApp::setup(){
 void ofApp::update(){
     
     if (!isGameRunning) {
+        ofClear(0, 0, 0);
         return;
     }
+    //player.nEnergy = nEnergyParam;
     player.rotationSpeed=pRotationSpeed;
     player.update();
     
     
-    //cout << "player deltapos: " << (player.forward * player.speed / ofGetFrameRate()) << endl;
     
     for(int em = 0; em < emitters.size(); em++){
         emitters[em]->update();
@@ -58,20 +60,31 @@ void ofApp::update(){
         //emitters[em]->sys->sprites[em].rotTowardsPlayer(player.pos);
         
         for (int i = 0; i < emitters[em]->sys->sprites.size(); i++) {
-
+            
             // Get values from sliders and update sprites dynamically
             //
-            float sc = scale;
+            float lf = life;
             float rs = agentRotationSpeed;
             
-                
-            emitters[em]->sys->sprites[i].scale = glm::vec3(sc, sc, sc);
-                
+            
+            emitters[em]->lifespan = lf;
             
             emitters[em]->sys->sprites[i].rotationSpeed = rs;
             emitters[em]->sys->sprites[i].rotTowardsPlayer(player.pos);
-
             
+            //check if sprite intersect player
+            bool intersect=emitters[em]->sys->sprites[i].insideTriangle(player.pos);
+            emitters[em]->sys->sprites[i].intersectedPlayer=intersect;
+            
+            if (intersect) {
+                explode.play();
+                cout << intersect << endl;
+                
+                if (--player.nEnergy <=0){
+                    isGameOver=true;
+                    isGameRunning=false;
+                }
+            }
         }
     }
     
@@ -87,7 +100,7 @@ void ofApp::draw(){
         ofSetColor(ofColor::white);
         if (!isGameOver){
             ofDrawBitmapString("Press SPACE to start\nPress Q to exit", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 - textWndwHeight/ 4);
-           
+            
         } else {
             ofDrawBitmapString("GAME OVER", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 - textWndwHeight/ 4);
             ofDrawBitmapString("Press SPACE to restart\nPress Q to exit", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 );
@@ -95,8 +108,12 @@ void ofApp::draw(){
         }
         return;
     }
-    
-    
+    ofSetColor(ofColor::gray);
+    ofDrawRectangle(ofGetWindowWidth()/2 - textWndwWidth / 2, ofGetWindowHeight()/10, textWndwWidth, textWndwHeight);
+    ofSetColor(ofColor::white);
+    string energy = ofToString(player.nEnergy);
+    ofDrawBitmapString("Energy levels:", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/8);
+    ofDrawBitmapString(energy, ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/7);
     ofSetColor(ofColor::white);
     player.draw();
     //use emitter for agents
@@ -116,14 +133,7 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    /*
-    float minX=player.img.getWidth();
-    float maxX=ofGetWindowWidth();
-    float minY=player.img.getHeight();
-    float maxY=ofGetWindowHeight();
-    */
     
-    //float knockBackMult=1.25f;
     
     switch (key) {
         case OF_KEY_UP:
@@ -147,8 +157,14 @@ void ofApp::keyPressed(int key){
             break;
         //Spacebar to start game
         case ' ':
-            
+            if (isGameOver){
+                
+                isGameOver = false;
+                player.nEnergy=nEnergyParam;
+                resetGame();
+            }
             isGameRunning=true;
+            
             break;
         case 'f':
         case 'F':
@@ -166,8 +182,20 @@ void ofApp::keyPressed(int key){
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-    player.moveDir = 0;
-    player.rotDir=0;
+    switch (key) {
+        case OF_KEY_UP:
+        case OF_KEY_DOWN:
+            player.moveDir = 0;
+            break;
+        case OF_KEY_LEFT:
+        case OF_KEY_RIGHT:
+            player.rotDir = 0;
+            break;
+        default:
+            player.moveDir = 0;
+            player.rotDir=0;
+            break;
+    }
 }
 
 //--------------------------------------------------------------
@@ -228,5 +256,10 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
 
+void ofApp::resetGame(){
+    
+    emitters.clear();
+    setup();
+}
 
 

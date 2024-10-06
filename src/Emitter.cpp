@@ -78,6 +78,9 @@ void SpriteList::update() {
 void SpriteList::draw() {
 	for (int i = 0; i < sprites.size(); i++) {
 		sprites[i].draw();
+        if (sprites[i].intersectedPlayer){
+            ofDrawCircle(255,0,0);
+        }
 	}
 }
 
@@ -120,13 +123,12 @@ void Emitter::init() {
 	lastSpawned = 0;
     
 	rate = 1;    // sprites/sec
-	haveChildImage = false;
+	haveChildImage = true;
 	haveImage = false;
     
 	//velocity = ofVec3f(0, -200, 0);
 	drawable = true;
-	width = 50;
-	height = 50;
+	
 }
 
 
@@ -183,13 +185,14 @@ void Emitter::update() {
 	vector<Sprite>::iterator s = sys->sprites.begin();
 	vector<Sprite>::iterator tmp;
 
-	// check which sprites have exceed their lifespan and delete
+	// check which sprites have exceed their lifespan or have touched the player and delete
 	// from list.  When deleting multiple objects from a vector while
 	// traversing at the same time, use an iterator.
 	//
 	while (s != sys->sprites.end()) {
-		if (s->lifespan != -1 && s->age() > s->lifespan) {
+        if ((s->lifespan != -1 && s->age() > s->lifespan) || s->intersectedPlayer) {
 			//			cout << "deleting sprite: " << s->name << endl;
+            
 			tmp = sys->sprites.erase(s);
 			s = tmp;
 		}
@@ -208,8 +211,7 @@ void Emitter::update() {
 void Emitter::moveSprite(Sprite *sprite) {
     
     sprite->pos -= (sprite->velocity * sprite->speed / ofGetFrameRate()) / 4;
-    cout << "agent forward: " << sprite->velocity << endl;
-
+   
 }
 
 
@@ -222,6 +224,7 @@ void Emitter::spawnSprite() {
 	//sprite.velocity = velocity;
 	sprite.lifespan = lifespan;
 	//sprite.pos = pos;
+    sprite.scale = glm::vec3(3,3,3);
     sprite.pos = glm::vec3(ofRandom(ofGetWindowWidth()), ofRandom(ofGetWindowHeight()), 0);
 	sprite.birthtime = ofGetElapsedTimeMillis();
     sprite.rot = ofRandom(360);

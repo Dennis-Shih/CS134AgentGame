@@ -27,6 +27,7 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h) override;
 		void dragEvent(ofDragInfo dragInfo) override;
 		void gotMessage(ofMessage msg) override;
+    
         ofxPanel gui;
         
         vector<Emitter*> emitters;
@@ -34,17 +35,23 @@ class ofApp : public ofBaseApp{
     
         Player player;
         ofxFloatSlider scale;
+        ofxFloatSlider life;
         ofxFloatSlider pRotationSpeed;
         ofxFloatSlider agentRotationSpeed;
         ofxFloatSlider rate;
+        ofxIntField nEnergyParam;
+    
         glm::vec3 mousePrevPos;
         //true when game started, false on title/game over until space pressed
         bool isGameRunning;
         bool isGameOver;
         ofSoundPlayer bgm;
+        ofSoundPlayer explode;
         ofSoundStream stream;
     
         float textWndwWidth;
         float textWndwHeight;
+    
+        void resetGame();
 		
 };
