@@ -46,7 +46,7 @@ void SpriteList::update() {
 	vector<Sprite>::iterator s = sprites.begin();
 	vector<Sprite>::iterator tmp;
 
-    cout << "spriteupdate " << endl;
+    
 	//
     /*
 	while (s != sprites.end()) {
@@ -127,7 +127,6 @@ void Emitter::init() {
 	drawable = true;
 	width = 50;
 	height = 50;
-    isSelected=false;
 }
 
 
@@ -136,6 +135,7 @@ void Emitter::init() {
 //
 //
 void Emitter::draw() {
+    /*
 	if (drawable) {
 
 		if (haveImage) {
@@ -146,6 +146,7 @@ void Emitter::draw() {
 			ofDrawRectangle(-width / 2 + pos.x, -height / 2 + pos.y, width, height);
 		}
 	}
+    */
 
 	// draw sprite system
 	//
@@ -206,8 +207,8 @@ void Emitter::update() {
 //move sprite along rotation vector
 void Emitter::moveSprite(Sprite *sprite) {
     
-    sprite->pos += (sprite->velocity * -sprite->speed / ofGetFrameRate()) / 4;
-    //sprite->pos += (sprite->velocity / ofGetFrameRate()) / 4;
+    sprite->pos -= (sprite->velocity * sprite->speed / ofGetFrameRate()) / 4;
+    cout << "agent forward: " << sprite->velocity << endl;
 
 }
 
@@ -220,7 +221,8 @@ void Emitter::spawnSprite() {
 	if (haveChildImage) sprite.setImage(childImage);
 	//sprite.velocity = velocity;
 	sprite.lifespan = lifespan;
-	sprite.pos = pos;
+	//sprite.pos = pos;
+    sprite.pos = glm::vec3(ofRandom(ofGetWindowWidth()), ofRandom(ofGetWindowHeight()), 0);
 	sprite.birthtime = ofGetElapsedTimeMillis();
     sprite.rot = ofRandom(360);
     sprite.speed = 200;

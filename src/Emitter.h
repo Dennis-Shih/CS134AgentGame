@@ -61,7 +61,6 @@ public:
 	bool haveChildImage;
 	bool haveImage;
     
-    bool isSelected;
 	float width, height;
     
    

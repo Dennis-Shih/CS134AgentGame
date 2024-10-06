@@ -23,10 +23,10 @@ void Sprite::rotTowardsPlayer(const glm::vec3 p) {
 
             if (rot > 180.0f) rot -= 360.0f;
             if (rot < -180.0f) rot += 360.0f;
-        
-       std::cout << "ang (degrees): " << ang << std::endl;
-       std::cout << "rot (degrees): " << rot << std::endl;
-   
+        /*
+       std::cout << "ang: " << ang << std::endl;
+       std::cout << "rot: " << rot << std::endl;
+   */
 }
  
 

@@ -15,13 +15,14 @@ class Player : public Shape {
         glm::mat4 getTransform();
         
         glm::vec3 pos = glm::vec3(0, 0, 0);
-        float rotation = 0;
+        
         glm::vec3 scale = glm::vec3(1, 1, 1);
         
         glm::vec3 forward;
         
         
         float speed;
+        float rotationSpeed;
         ofImage img;
         ofxFloatSlider sliderScale;
         ofxToggle shapeToggle;
@@ -32,4 +33,11 @@ class Player : public Shape {
         void update();
         ofColor color = ofColor::blue;
         vector<glm::vec3> verts;
+    
+        //for moveDir, 1 = up and -1 = down
+        float moveDir;
+        //for rotDir, -1 = left and 1 = right
+        float rotDir;
+        //keep player from going OOB
+        float knockBackMult;
 };

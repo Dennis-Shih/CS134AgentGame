@@ -34,9 +34,17 @@ class ofApp : public ofBaseApp{
     
         Player player;
         ofxFloatSlider scale;
-        ofxFloatSlider rotationSpeed;
+        ofxFloatSlider pRotationSpeed;
+        ofxFloatSlider agentRotationSpeed;
+        ofxFloatSlider rate;
         glm::vec3 mousePrevPos;
         //true when game started, false on title/game over until space pressed
         bool isGameRunning;
+        bool isGameOver;
+        ofSoundPlayer bgm;
+        ofSoundStream stream;
+    
+        float textWndwWidth;
+        float textWndwHeight;
 		
 };

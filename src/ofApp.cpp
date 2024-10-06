@@ -13,28 +13,47 @@ void ofApp::setup(){
     em = new Emitter();
     em->pos=glm::vec3(ofGetWindowWidth() / 2.0, ofGetWindowHeight() / 2.0, 0);
     emitters.push_back(em);
-    em = new Emitter();
-    em->pos=glm::vec3(ofGetWindowWidth() / 4.0, ofGetWindowHeight() / 2.0, 0);
-    emitters.push_back(em);
+   
     
     
     gui.setup();
-    //initialize scale to 100
+    
     gui.add(player.sliderScale.setup("Scale", 1, 0.1, 2));
     
     gui.add(player.shapeToggle.setup("Shape Toggle", false));
     gui.add(scale.setup("Scale", 1, .05, 1.0));
-    gui.add(rotationSpeed.setup("Rotation Speed (deg/Frame)", 1, 0, 10));
+    gui.add(pRotationSpeed.setup("Player Rotation Speed (deg/Frame)", 1, 1, 10));
+    gui.add(agentRotationSpeed.setup("Agent Rotation Speed (deg/Frame)", 1, 1, 10));
+    gui.add(rate.setup("Rate", 1, 0, 10));
     
-     
+    //ofsoundstreamsettings
+    bgm.load("audio/bgm.wav");
+    bgm.setVolume(0.4);
+    bgm.setLoop(true);
+    bgm.play();
+    
+    textWndwWidth = 200;
+    textWndwHeight = 100;
+   
+    
 }
 
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    if (!isGameRunning) {
+        return;
+    }
+    player.rotationSpeed=pRotationSpeed;
     player.update();
+    
+    
+    //cout << "player deltapos: " << (player.forward * player.speed / ofGetFrameRate()) << endl;
+    
     for(int em = 0; em < emitters.size(); em++){
         emitters[em]->update();
+        emitters[em]->setRate(rate);
         //emitters[em]->rot;
         //emitters[em]->sys->sprites[em].rotTowardsPlayer(player.pos);
         
@@ -43,7 +62,7 @@ void ofApp::update(){
             // Get values from sliders and update sprites dynamically
             //
             float sc = scale;
-            float rs = rotationSpeed;
+            float rs = agentRotationSpeed;
             
                 
             emitters[em]->sys->sprites[i].scale = glm::vec3(sc, sc, sc);
@@ -51,9 +70,7 @@ void ofApp::update(){
             
             emitters[em]->sys->sprites[i].rotationSpeed = rs;
             emitters[em]->sys->sprites[i].rotTowardsPlayer(player.pos);
-           
-            cout << emitters[em]->sys->sprites[i].scale << endl;
-            
+
             
         }
     }
@@ -62,6 +79,24 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
+    if (!isGameRunning) {
+        //display the game start instructuions
+        ofSetColor(ofColor::gray);
+        ofDrawRectangle(ofGetWindowWidth()/2 - textWndwWidth / 2, ofGetWindowHeight()/2 - textWndwHeight / 2, textWndwWidth, textWndwHeight);
+        ofSetColor(ofColor::white);
+        if (!isGameOver){
+            ofDrawBitmapString("Press SPACE to start\nPress Q to exit", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 - textWndwHeight/ 4);
+           
+        } else {
+            ofDrawBitmapString("GAME OVER", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 - textWndwHeight/ 4);
+            ofDrawBitmapString("Press SPACE to restart\nPress Q to exit", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 );
+            
+        }
+        return;
+    }
+    
+    
     ofSetColor(ofColor::white);
     player.draw();
     //use emitter for agents
@@ -75,69 +110,64 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::exit(){
-
+    bgm.stop();
+    ofExit();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    /*
     float minX=player.img.getWidth();
     float maxX=ofGetWindowWidth();
     float minY=player.img.getHeight();
     float maxY=ofGetWindowHeight();
+    */
     
-    float knockBackMult=1.25f;
+    //float knockBackMult=1.25f;
     
     switch (key) {
         case OF_KEY_UP:
-            
-            cout << "px" << player.pos.x << endl;
-            cout << "x > minx" << (player.pos.x > minX) << endl;
-            player.pos -= player.forward * player.speed;
-            //kick player back if out of bounds, otherwise move normally
-            if (player.pos.x < minX) {
-                player.pos.x += knockBackMult * player.speed;
-            } else if (player.pos.x > maxX) {
-                player.pos.x -= knockBackMult * player.speed;
-            }
-            if (player.pos.y < minY || player.pos.y > maxY){
-                player.pos.y += knockBackMult * player.speed;
-            } else if (player.pos.y > maxY) {
-                player.pos.y -= knockBackMult * player.speed;
-            }
+           
+            player.moveDir = 1;
+        
             
             break;
         case OF_KEY_DOWN:
-            player.pos += player.forward * player.speed;
-            if (player.pos.x < minX) {
-                player.pos.x -= knockBackMult * player.speed;
-            } else if (player.pos.x > maxX) {
-                player.pos.x += knockBackMult * player.speed;
-            }
-            if (player.pos.y < minY || player.pos.y > maxY){
-                player.pos.y -= knockBackMult * player.speed;
-            } else if (player.pos.y > maxY) {
-                player.pos.y += knockBackMult * player.speed;
-            }
+            player.moveDir = -1;
+            
             
             break;
         case OF_KEY_LEFT:
-            player.rotation-=5;
+            player.rotDir=-1;
+            //player.rot-=pRotationSpeed;
             break;
         case OF_KEY_RIGHT:
-            player.rotation+=5;
+            player.rotDir=1;
+            //player.rot+=pRotationSpeed;
+            break;
+        //Spacebar to start game
+        case ' ':
+            
+            isGameRunning=true;
             break;
         case 'f':
         case 'F':
             ofToggleFullscreen();
             break;
+        case 'q':
+        case 'Q':
+            exit();
+            break;
         default:
+            
             break;
     }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
-
+    player.moveDir = 0;
+    player.rotDir=0;
 }
 
 //--------------------------------------------------------------
@@ -152,7 +182,15 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-
+    bool inDrag;
+    glm::vec3 mousePos = glm::vec3(x, y, 0);
+    
+    inDrag = player.inside(mousePos);
+    if (inDrag) {
+        cout << "inside" << endl;
+        mousePrevPos = mousePos;
+    } else cout << "outside" << endl;
+    
 }
 
 //--------------------------------------------------------------
@@ -189,3 +227,6 @@ void ofApp::gotMessage(ofMessage msg){
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
 }
+
+
+
