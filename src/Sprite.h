@@ -40,7 +40,7 @@ public:
 			ofPopMatrix();
 		}
         ofSetColor(0, 255, 0);
-        ofDrawLine(pos,pos - velocity * 200);
+        ofDrawLine(pos,pos - velocity * 20);
 	}
 
 	float age() {

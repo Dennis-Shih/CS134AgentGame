@@ -34,8 +34,9 @@ class ofApp : public ofBaseApp{
         Emitter* em = NULL;
     
         Player player;
-        ofxFloatSlider scale;
+       
         ofxFloatSlider life;
+        ofxFloatSlider pSpeed;
         ofxFloatSlider pRotationSpeed;
         ofxFloatSlider agentRotationSpeed;
         ofxFloatSlider rate;
@@ -49,8 +50,11 @@ class ofApp : public ofBaseApp{
         ofSoundPlayer explode;
         ofSoundStream stream;
     
+        ofImage bg;
+    
         float textWndwWidth;
         float textWndwHeight;
+        float timeSeconds;
     
         void resetGame();
 		

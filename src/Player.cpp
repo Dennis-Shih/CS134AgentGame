@@ -28,8 +28,8 @@ Player::Player() {
     verts.push_back(glm::vec3(0, -2, 0));
     verts.push_back(glm::vec3(-1, 1, 0));
     
-    scale = glm::vec3(0.8, 0.8, 1);
-    
+   // scale = glm::vec3(1, 1, 1);
+    scale = glm::vec3(50, 50, 1);
     nEnergy = 5;
     pos = glm::vec3(ofGetWindowWidth() / 2.0, ofGetWindowHeight() / 2.0, 0);
     speed = 3.0f;
@@ -41,18 +41,33 @@ Player::Player() {
 
 
 void Player::draw() {
+   
+    float sl=sliderScale;
     ofPushMatrix();
     ofMultMatrix(getTransform());
     
     ofFill();
     //ofSetColor(color);
+    //ofDrawTriangle(verts[0], verts[1], verts[2]);
+    
+    if (shapeToggle) {
+         ofScale(sliderScale , sliderScale);
+         
+         
+         ofDrawTriangle(verts[0], verts[1], verts[2]);
+         
+     } else {
+         ofScale(sliderScale /100, sliderScale/100 );
+         
+         img.draw(-img.getWidth()/2, -img.getHeight()/2);
+     }
+    
+    
+    
     /*
-    ofScale(scale, sliderScale);
-    ofDrawTriangle(verts[0], verts[1], verts[2]);
-    */
     ofScale(sliderScale, sliderScale);
     img.draw(-img.getWidth()/2, -img.getHeight()/2);
-    
+    */
     
     ofPopMatrix();
     

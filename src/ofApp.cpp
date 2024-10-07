@@ -6,7 +6,13 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
+    if (bg.load("images/bg.png")) {
+        cout << "bg loaded" << endl;
+    }
+    
     player.setup();
+    
     
     //agent.setup();
     
@@ -21,7 +27,8 @@ void ofApp::setup(){
     gui.add(player.sliderScale.setup("Player Scale", 1, 0.1, 2));
     
     gui.add(player.shapeToggle.setup("Shape Toggle", false));
-    gui.add(life.setup("Agent Life", 3000, 1, 10000));
+    gui.add(life.setup("Agent Life", emitters[0]->lifespan, 1, 10000));
+    gui.add(pSpeed.setup("Player Speed", player.speed, 1, 10));
     gui.add(pRotationSpeed.setup("Player Rotation Speed (deg/Frame)", 1, 1, 10));
     gui.add(agentRotationSpeed.setup("Agent Rotation Speed (deg/Frame)", 1, 1, 10));
     gui.add(rate.setup("Rate", 1, 1, 10));
@@ -34,7 +41,7 @@ void ofApp::setup(){
     bgm.play();
     
     textWndwWidth = 200;
-    textWndwHeight = 100;
+    textWndwHeight = 200;
    
     
 }
@@ -44,10 +51,13 @@ void ofApp::setup(){
 void ofApp::update(){
     
     if (!isGameRunning) {
+        
         ofClear(0, 0, 0);
         return;
     }
+    timeSeconds=ofGetElapsedTimef();
     //player.nEnergy = nEnergyParam;
+    player.speed = pSpeed;
     player.rotationSpeed=pRotationSpeed;
     player.update();
     
@@ -73,7 +83,8 @@ void ofApp::update(){
             emitters[em]->sys->sprites[i].rotTowardsPlayer(player.pos);
             
             //check if sprite intersect player
-            bool intersect=emitters[em]->sys->sprites[i].insideTriangle(player.pos);
+            //bool intersect=emitters[em]->sys->sprites[i].insideTriangle(player.pos);
+            bool intersect=player.inside(emitters[em]->sys->sprites[i].pos);
             emitters[em]->sys->sprites[i].intersectedPlayer=intersect;
             
             if (intersect) {
@@ -83,6 +94,7 @@ void ofApp::update(){
                 if (--player.nEnergy <=0){
                     isGameOver=true;
                     isGameRunning=false;
+                    timeSeconds=ofGetElapsedTimef();
                 }
             }
         }
@@ -103,18 +115,29 @@ void ofApp::draw(){
             
         } else {
             ofDrawBitmapString("GAME OVER", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 - textWndwHeight/ 4);
+            ofDrawBitmapString("Time survived: " + ofToString(timeSeconds), ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/3.5);
+            
             ofDrawBitmapString("Press SPACE to restart\nPress Q to exit", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 );
             
         }
         return;
     }
+    ofSetColor(ofColor::white);
+    bg.draw(0,0, ofGetWidth(), ofGetHeight());
+    
     ofSetColor(ofColor::gray);
     ofDrawRectangle(ofGetWindowWidth()/2 - textWndwWidth / 2, ofGetWindowHeight()/10, textWndwWidth, textWndwHeight);
     ofSetColor(ofColor::white);
     string energy = ofToString(player.nEnergy);
     ofDrawBitmapString("Energy levels:", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/8);
     ofDrawBitmapString(energy, ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/7);
+    ofDrawBitmapString("Time elapsed (s):", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/6);
+    ofDrawBitmapString(timeSeconds, ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/5.5);
+    ofDrawBitmapString("Framerate:", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/4);
+    ofDrawBitmapString(ofGetFrameRate(), ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/3.5);
+    
     ofSetColor(ofColor::white);
+    
     player.draw();
     //use emitter for agents
     for(int em = 0; em < emitters.size(); em++){
@@ -160,9 +183,10 @@ void ofApp::keyPressed(int key){
             if (isGameOver){
                 
                 isGameOver = false;
-                player.nEnergy=nEnergyParam;
+                
                 resetGame();
             }
+            ofResetElapsedTimeCounter();
             isGameRunning=true;
             
             break;
@@ -210,11 +234,11 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    bool inDrag;
+    bool inShape;
     glm::vec3 mousePos = glm::vec3(x, y, 0);
     
-    inDrag = player.inside(mousePos);
-    if (inDrag) {
+    inShape = player.inside(mousePos);
+    if (inShape) {
         cout << "inside" << endl;
         mousePrevPos = mousePos;
     } else cout << "outside" << endl;
@@ -257,7 +281,8 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 }
 
 void ofApp::resetGame(){
-    
+    player.speed=pSpeed;
+    player.nEnergy=nEnergyParam;
     emitters.clear();
     setup();
 }

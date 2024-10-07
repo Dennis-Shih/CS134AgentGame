@@ -78,9 +78,6 @@ void SpriteList::update() {
 void SpriteList::draw() {
 	for (int i = 0; i < sprites.size(); i++) {
 		sprites[i].draw();
-        if (sprites[i].intersectedPlayer){
-            ofDrawCircle(255,0,0);
-        }
 	}
 }
 
@@ -171,7 +168,7 @@ void Emitter::update() {
 		// call virtual to spawn a new sprite
 		//
         
-        cout << "spawn agent" << endl;
+        //cout << "spawn agent" << endl;
 		spawnSprite();
 		lastSpawned = time;
         
