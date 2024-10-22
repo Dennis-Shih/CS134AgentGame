@@ -4,7 +4,7 @@
 #include "ofxGui.h"
 #include "Player.h"
 #include "Emitter.h"
-
+#include "ParticleEmitter.h"
 
 
 class ofApp : public ofBaseApp{
@@ -31,23 +31,32 @@ class ofApp : public ofBaseApp{
         ofxPanel gui;
         
         vector<Emitter*> emitters;
+        
         Emitter* em = NULL;
+        //particle ray and explosion, also use for agents to be moved by forces
+        ParticleEmitter* pem=NULL;
     
         Player player;
-       
+        
         ofxFloatSlider life;
         ofxFloatSlider pSpeed;
         ofxFloatSlider pRotationSpeed;
         ofxFloatSlider agentRotationSpeed;
         ofxFloatSlider rate;
+        ofxIntField nAgents;
         ofxIntField nEnergyParam;
+        ofxIntSlider level;
     
         glm::vec3 mousePrevPos;
         //true when game started, false on title/game over until space pressed
         bool isGameRunning;
         bool isGameOver;
+        bool hideGui;
+    
+        bool spriteAlt;
         ofSoundPlayer bgm;
         ofSoundPlayer explode;
+        ofSoundPlayer shoot;
         ofSoundStream stream;
     
         ofImage bg;
@@ -55,7 +64,7 @@ class ofApp : public ofBaseApp{
         float textWndwWidth;
         float textWndwHeight;
         float timeSeconds;
-    
+        
         void resetGame();
 		
 };

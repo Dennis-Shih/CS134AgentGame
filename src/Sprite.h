@@ -39,8 +39,10 @@ public:
 			ofDrawTriangle(verts[0], verts[1], verts[2]);
 			ofPopMatrix();
 		}
+        /* header for ref
         ofSetColor(0, 255, 0);
         ofDrawLine(pos,pos - velocity * 20);
+         */
 	}
 
 	float age() {

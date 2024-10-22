@@ -17,27 +17,60 @@ class Player : public Shape {
         glm::vec3 pos = glm::vec3(0, 0, 0);
         
         glm::vec3 scale = glm::vec3(1, 1, 1);
+    
+        glm::vec3 velocity = glm::vec3(0,0,0);
+        
+        glm::vec3 force = glm::vec3(0,0,0);
+    
+        glm::vec3 accel = glm::vec3(0,0,0);
         
         glm::vec3 forward;
         
         int nEnergy;
-        float speed;
-        float rotationSpeed;
-        ofImage img;
-        ofxFloatSlider sliderScale;
-        ofxToggle shapeToggle;
         
-        bool inside(glm::vec3 p);
-        void setup();
-        void draw();
-        void update();
-        ofColor color = ofColor::blue;
-        vector<glm::vec3> verts;
+        //use this for max speed
+        
+        //player movement stuff
+        float speed;
     
+        float mass;
+    
+        float rotationSpeed;
+    
+        float damping;
+        
         //for moveDir, 1 = up and -1 = down
         float moveDir;
         //for rotDir, -1 = left and 1 = right
         float rotDir;
         //keep player from going OOB
         float knockBackMult;
+    
+    
+    
+        ofImage img;
+        ofxFloatSlider sliderScale;
+        ofxToggle shapeToggle;
+        
+        float w;
+        float h;
+    
+        //methods
+        
+        bool inside(glm::vec3 p);
+        void setup();
+        void draw();
+        void update();
+    
+        void integrate();
+        //reset player to init state for new game
+        void reset();
+    
+        ofColor color = ofColor::blue;
+        vector<glm::vec3> verts;
+    
+        
+        bool shotFired;
+    
+    
 };

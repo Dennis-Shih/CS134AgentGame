@@ -17,6 +17,10 @@
 		"6766E24C-6BFD-445C-8BBF-AB4B9FCA683C" /* ofxBaseGui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "222BC69A-CA29-42D0-AF33-F61D01C539BD" /* ofxBaseGui.cpp */; };
 		"77DDD835-7332-4662-8114-A98BECC8B158" /* ofxButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "C83C67C8-CA0E-4B6D-ADC1-0A4E8958B998" /* ofxButton.cpp */; };
 		"89FD8C2B-2F4E-4B85-9897-58B37385832A" /* ofxGuiGroup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = "3312B826-65EC-464B-A1C8-5A30D6AAED56" /* ofxGuiGroup.cpp */; };
+		C1734FC72CC6E5FB0043AFD8 /* ParticleEmitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1734FC62CC6E5FB0043AFD8 /* ParticleEmitter.cpp */; };
+		C1734FD12CC72BD50043AFD8 /* ParticleSystem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1734FD02CC72BD50043AFD8 /* ParticleSystem.cpp */; };
+		C1734FD32CC72C180043AFD8 /* TransformObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1734FD22CC72C180043AFD8 /* TransformObject.cpp */; };
+		C1734FD52CC72EEF0043AFD8 /* Particle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C1734FD42CC72EEF0043AFD8 /* Particle.cpp */; };
 		C18F71C02CAA241700A20595 /* Emitter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C18F71BE2CAA241700A20595 /* Emitter.cpp */; };
 		C18F71C42CAA24A000A20595 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C18F71C22CAA24A000A20595 /* Player.cpp */; };
 		C18F71C82CAA298100A20595 /* Sprite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C18F71C72CAA298100A20595 /* Sprite.cpp */; };
@@ -65,6 +69,14 @@
 		"A5A2E305-A507-4146-93AE-81C8268804A8" /* ofxInputField.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxInputField.h; path = ../../../addons/ofxGui/src/ofxInputField.h; sourceTree = SOURCE_ROOT; };
 		"A83298B6-1CA8-44B2-B03B-7A2FB1EF0069" /* ofxSlider.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = ofxSlider.cpp; path = ../../../addons/ofxGui/src/ofxSlider.cpp; sourceTree = SOURCE_ROOT; };
 		"B19945D8-BAA3-40DF-BB79-53843EE8E5F3" /* ofxGui.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; name = ofxGui.h; path = ../../../addons/ofxGui/src/ofxGui.h; sourceTree = SOURCE_ROOT; };
+		C1734FC62CC6E5FB0043AFD8 /* ParticleEmitter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleEmitter.cpp; sourceTree = "<group>"; };
+		C1734FC82CC6E6330043AFD8 /* ParticleEmitter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleEmitter.h; sourceTree = "<group>"; };
+		C1734FCA2CC6FACA0043AFD8 /* ParticleSystem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParticleSystem.h; sourceTree = "<group>"; };
+		C1734FCF2CC6FCBC0043AFD8 /* TransformObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TransformObject.h; sourceTree = "<group>"; };
+		C1734FD02CC72BD50043AFD8 /* ParticleSystem.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ParticleSystem.cpp; sourceTree = "<group>"; };
+		C1734FD22CC72C180043AFD8 /* TransformObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TransformObject.cpp; sourceTree = "<group>"; };
+		C1734FD42CC72EEF0043AFD8 /* Particle.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Particle.cpp; sourceTree = "<group>"; };
+		C1734FD62CC72F510043AFD8 /* Particle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Particle.h; sourceTree = "<group>"; };
 		C18F71BE2CAA241700A20595 /* Emitter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Emitter.cpp; sourceTree = "<group>"; };
 		C18F71BF2CAA241700A20595 /* Emitter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Emitter.h; sourceTree = "<group>"; };
 		C18F71C22CAA24A000A20595 /* Player.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
@@ -170,6 +182,14 @@
 				E4B69E1F0A3A1BDC003C02F2 /* ofApp.h */,
 				C18F71C22CAA24A000A20595 /* Player.cpp */,
 				C18F71C52CAA270E00A20595 /* Player.h */,
+				C1734FC62CC6E5FB0043AFD8 /* ParticleEmitter.cpp */,
+				C1734FC82CC6E6330043AFD8 /* ParticleEmitter.h */,
+				C1734FCA2CC6FACA0043AFD8 /* ParticleSystem.h */,
+				C1734FD02CC72BD50043AFD8 /* ParticleSystem.cpp */,
+				C1734FCF2CC6FCBC0043AFD8 /* TransformObject.h */,
+				C1734FD22CC72C180043AFD8 /* TransformObject.cpp */,
+				C1734FD42CC72EEF0043AFD8 /* Particle.cpp */,
+				C1734FD62CC72F510043AFD8 /* Particle.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -272,13 +292,17 @@
 				"77DDD835-7332-4662-8114-A98BECC8B158" /* ofxButton.cpp in Sources */,
 				C18F71C02CAA241700A20595 /* Emitter.cpp in Sources */,
 				"31B9DD60-26E7-4453-AACB-B937F8CD954E" /* ofxColorPicker.cpp in Sources */,
+				C1734FD12CC72BD50043AFD8 /* ParticleSystem.cpp in Sources */,
+				C1734FD52CC72EEF0043AFD8 /* Particle.cpp in Sources */,
 				"89FD8C2B-2F4E-4B85-9897-58B37385832A" /* ofxGuiGroup.cpp in Sources */,
 				"1E4943F6-D1D1-42E1-AC1C-BE499DD9D454" /* ofxInputField.cpp in Sources */,
 				C18F71C42CAA24A000A20595 /* Player.cpp in Sources */,
+				C1734FD32CC72C180043AFD8 /* TransformObject.cpp in Sources */,
 				"4EA01535-7A8F-411E-850A-AE2F51D7AF07" /* ofxLabel.cpp in Sources */,
 				"0E66BD5F-287B-43AE-9A0F-D2ADF32F92C0" /* ofxPanel.cpp in Sources */,
 				"2ED2036C-39A7-4171-A290-05099C3FD2E0" /* ofxSlider.cpp in Sources */,
 				"0B0B17CF-8C02-43FC-9E9C-13EACF5897DA" /* ofxSliderGroup.cpp in Sources */,
+				C1734FC72CC6E5FB0043AFD8 /* ParticleEmitter.cpp in Sources */,
 				"08CBF70E-CAB4-40A9-9206-185CD65E227B" /* ofxToggle.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

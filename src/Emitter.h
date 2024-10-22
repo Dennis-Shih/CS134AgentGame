@@ -36,6 +36,7 @@ public:
 	void setRate(float);
 	void update();
     
+    void setNAgents(float);
 
 	// virtuals - can overloaded
 	virtual void moveSprite(Sprite *);
@@ -60,6 +61,7 @@ public:
 	bool drawable;
 	bool haveChildImage;
 	bool haveImage;
+    int nAgents;
     
 	float width, height;
     

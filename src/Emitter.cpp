@@ -3,21 +3,7 @@
 
 
 //----------------------------------------------------------------------------------
-//
-// This example code demonstrates the use of an "Emitter" class to emit Sprites
-// and set them in motion. The concept of an "Emitter" is taken from particle
-// systems (which we will cover next week).
-//
-// The Sprite class has also been upgraded to include lifespan, velocity and age
-// members.   The emitter can control rate of emission and the current velocity
-// of the particles. In this example, there is no acceleration or physics, the
-// sprites just move simple frame-based animation.
-//
-// The code shows a way to attach images to the sprites and optional the
-// emitter (which is a point source) can also have an image.  If there are
-// no images attached, a placeholder rectangle is drawn.
-// Emitters  can be placed anywhere in the window. In this example, you can drag
-// it around with the mouse.
+//Agent emitter
 
 
 
@@ -169,8 +155,10 @@ void Emitter::update() {
 		//
         
         //cout << "spawn agent" << endl;
-		spawnSprite();
-		lastSpawned = time;
+        for (int i = 0;i<nAgents; i++){
+            spawnSprite();
+        }
+        lastSpawned = time;
         
         
         
@@ -213,7 +201,6 @@ void Emitter::moveSprite(Sprite *sprite) {
 
 
 
-// virtual function to spawn sprite (can be overloaded)
 //
 void Emitter::spawnSprite() {
 	Sprite sprite;
@@ -261,4 +248,8 @@ void Emitter::setImage(ofImage img) {
 
 void Emitter::setRate(float r) {
 	rate = r;
+}
+
+void Emitter::setNAgents(float n) {
+    nAgents = n;
 }

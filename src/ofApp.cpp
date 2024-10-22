@@ -7,7 +7,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     
-    if (bg.load("images/bg.png")) {
+    if (bg.load("images/background.png")) {
         cout << "bg loaded" << endl;
     }
     
@@ -19,26 +19,37 @@ void ofApp::setup(){
     em = new Emitter();
     em->pos=glm::vec3(ofGetWindowWidth() / 2.0, ofGetWindowHeight() / 2.0, 0);
     emitters.push_back(em);
+    
+    pem=new ParticleEmitter();
+    pem->pos=player.pos;
+    pem->start();
    
     
     
     gui.setup();
     
     gui.add(player.sliderScale.setup("Player Scale", 1, 0.1, 2));
-    
     gui.add(player.shapeToggle.setup("Shape Toggle", false));
-    gui.add(life.setup("Agent Life", emitters[0]->lifespan, 1, 10000));
-    gui.add(pSpeed.setup("Player Speed", player.speed, 1, 10));
+    
+    
+    gui.add(life.setup("Agent Life", emitters[0]->lifespan, 500, 10000));
+    gui.add(pSpeed.setup("Player Speed", player.speed, 50, 500));
     gui.add(pRotationSpeed.setup("Player Rotation Speed (deg/Frame)", 1, 1, 10));
     gui.add(agentRotationSpeed.setup("Agent Rotation Speed (deg/Frame)", 1, 1, 10));
+    gui.add(nAgents.setup("nAgents ", 1, 1, 5));
     gui.add(rate.setup("Rate", 1, 1, 10));
     
     gui.add(nEnergyParam.setup("Default Energy Level", player.nEnergy, 1, 10));
+    
+    
     explode.load("audio/explode.wav");
     bgm.load("audio/bgm.wav");
-    bgm.setVolume(0.4);
+    bgm.setVolume(0.2);
     bgm.setLoop(true);
     bgm.play();
+    shoot.load("audio/shoot.mp3");
+    shoot.setVolume(1.2);
+    shoot.setLoop(false);
     
     textWndwWidth = 200;
     textWndwHeight = 200;
@@ -66,6 +77,7 @@ void ofApp::update(){
     for(int em = 0; em < emitters.size(); em++){
         emitters[em]->update();
         emitters[em]->setRate(rate);
+        emitters[em]->setNAgents(nAgents);
         //emitters[em]->rot;
         //emitters[em]->sys->sprites[em].rotTowardsPlayer(player.pos);
         
@@ -83,13 +95,13 @@ void ofApp::update(){
             emitters[em]->sys->sprites[i].rotTowardsPlayer(player.pos);
             
             //check if sprite intersect player
-            //bool intersect=emitters[em]->sys->sprites[i].insideTriangle(player.pos);
-            bool intersect=player.inside(emitters[em]->sys->sprites[i].pos);
+            bool intersect=emitters[em]->sys->sprites[i].insideTriangle(player.pos);
+            //bool intersect=player.inside(emitters[em]->sys->sprites[i].pos);
             emitters[em]->sys->sprites[i].intersectedPlayer=intersect;
             
             if (intersect) {
                 explode.play();
-                cout << intersect << endl;
+                
                 
                 if (--player.nEnergy <=0){
                     isGameOver=true;
@@ -98,6 +110,18 @@ void ofApp::update(){
                 }
             }
         }
+    }
+    
+    //particleray
+    pem->pos=player.pos;
+    pem->setVelocity(player.forward * player.speed*2);
+    
+    pem->setLifespan(10);
+    pem->update();
+    
+    if (player.shotFired){
+        pem->spawnParticle();
+        player.shotFired=!player.shotFired;
     }
     
 }
@@ -111,7 +135,7 @@ void ofApp::draw(){
         ofDrawRectangle(ofGetWindowWidth()/2 - textWndwWidth / 2, ofGetWindowHeight()/2 - textWndwHeight / 2, textWndwWidth, textWndwHeight);
         ofSetColor(ofColor::white);
         if (!isGameOver){
-            ofDrawBitmapString("Press SPACE to start\nPress Q to exit", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 - textWndwHeight/ 4);
+            ofDrawBitmapString("Press SPACE to start\nPress H to hide GUI\nPress Q to exit", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 - textWndwHeight/ 4);
             
         } else {
             ofDrawBitmapString("GAME OVER", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 - textWndwHeight/ 4);
@@ -144,8 +168,10 @@ void ofApp::draw(){
         emitters[em]->draw();
         
     }
-    
-    gui.draw();
+    pem->draw();
+    if (!hideGui){
+        gui.draw();
+    }
 }
 
 //--------------------------------------------------------------
@@ -186,9 +212,31 @@ void ofApp::keyPressed(int key){
                 
                 resetGame();
             }
-            ofResetElapsedTimeCounter();
-            isGameRunning=true;
             
+            /*
+            if (isGameRunning){
+                //shoot particle ray
+                
+                
+                shoot.play();
+            }
+            
+            else*/ isGameRunning=true;
+            
+            break;
+        case 's':
+            
+            if (isGameRunning && !player.shotFired){
+                //shoot particle ray
+                //cout << "sdown" << endl;
+                player.shotFired=true;
+                shoot.play();
+            }
+             
+            break;
+        case 'h':
+        case 'H':
+            hideGui=!hideGui;
             break;
         case 'f':
         case 'F':
@@ -198,10 +246,14 @@ void ofApp::keyPressed(int key){
         case 'Q':
             exit();
             break;
+            
+            /*
         default:
             
             break;
+            */
     }
+    
 }
 
 //--------------------------------------------------------------
@@ -215,10 +267,17 @@ void ofApp::keyReleased(int key){
         case OF_KEY_RIGHT:
             player.rotDir = 0;
             break;
+        /*case 's':
+            player.shotFired=false;*/
+        default:
+            break;
+            
+            /*
         default:
             player.moveDir = 0;
             player.rotDir=0;
             break;
+             */
     }
 }
 
@@ -234,6 +293,7 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+    /*
     bool inShape;
     glm::vec3 mousePos = glm::vec3(x, y, 0);
     
@@ -242,6 +302,15 @@ void ofApp::mousePressed(int x, int y, int button){
         cout << "inside" << endl;
         mousePrevPos = mousePos;
     } else cout << "outside" << endl;
+    */
+    /*
+    if (isGameRunning){
+        //shoot particle ray
+        
+        
+        shoot.play();
+    }
+    */
     
 }
 
@@ -281,8 +350,12 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 }
 
 void ofApp::resetGame(){
+    ofResetElapsedTimeCounter();
+    player.reset();
+    
     player.speed=pSpeed;
     player.nEnergy=nEnergyParam;
+    
     emitters.clear();
     setup();
 }

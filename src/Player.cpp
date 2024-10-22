@@ -29,14 +29,19 @@ Player::Player() {
     verts.push_back(glm::vec3(-1, 1, 0));
     
    // scale = glm::vec3(1, 1, 1);
-    scale = glm::vec3(50, 50, 1);
+    scale = glm::vec3(1, 1, 1);
     nEnergy = 5;
     pos = glm::vec3(ofGetWindowWidth() / 2.0, ofGetWindowHeight() / 2.0, 0);
-    speed = 3.0f;
+    speed = 300.0f;
+    mass=1.0f;
+    
+    damping= 0.99;
+    
     knockBackMult=1.25f;
     moveDir = 0;
     rotDir=0;
     rotationSpeed = 0;
+    shotFired=false;
 }
 
 
@@ -51,13 +56,13 @@ void Player::draw() {
     //ofDrawTriangle(verts[0], verts[1], verts[2]);
     
     if (shapeToggle) {
-         ofScale(sliderScale , sliderScale);
+         ofScale(sl*100, sl*100);
          
          
          ofDrawTriangle(verts[0], verts[1], verts[2]);
          
      } else {
-         ofScale(sliderScale /100, sliderScale/100 );
+         ofScale(sliderScale, sliderScale );
          
          img.draw(-img.getWidth()/2, -img.getHeight()/2);
      }
@@ -78,31 +83,55 @@ void Player::draw() {
 }
 
 void Player::update() {
+    
     float minX=img.getWidth() / scale.length();
     float maxX=ofGetWindowWidth() - minX;
     float minY=img.getHeight() / scale.length();
     float maxY=ofGetWindowHeight() - minY;
-    
+    /*
     if (rotDir<0) {
         //left
         rot-=rotationSpeed;
         //right
     } else if (rotDir>0) rot+=rotationSpeed;
+    */
     
     forward= glm::normalize(glm::vec3(sin(glm::radians(-rot)), cos(glm::radians(-rot)), 0));
+    force = forward * moveDir * speed;
+    //pos -= forward * speed * moveDir;
     
-    pos -= forward * speed * moveDir;
+    integrate();
+    
     if (pos.x < minX) {
-        pos.x += knockBackMult * speed;
+        pos.x += knockBackMult * minX;
     } else if (pos.x > maxX) {
-        pos.x -= knockBackMult * speed;
+        pos.x -= knockBackMult * minX;
     }
     if (pos.y < minY){
-       pos.y += knockBackMult * speed;
+       pos.y += knockBackMult * minY;
     } else if (pos.y > maxY) {
-        pos.y -= knockBackMult * speed;
+        pos.y -= knockBackMult * minY;
     }
     
+}
+
+void Player::integrate(){
+    float dt = ofGetLastFrameTime();
+    pos-=velocity * dt;
+    
+    accel=(1/mass) * force;
+    velocity+=accel * dt;
+    velocity *=damping;
+    
+    rotationSpeed*=rotDir;
+    rot+=rotationSpeed;
+    /*
+    if (rotDir!=0) {
+        rotationSpeed*=rotDir;
+        rot+=rotationSpeed;
+        
+    } else rot+=rotationSpeed;
+    */
 }
 
 glm::mat4 Player::getTransform() {
@@ -119,12 +148,13 @@ glm::mat4 Player::getTransform() {
 
 void Player::setup() {
     Player();
-    if (img.load("images/Player1.png")) {
+    if (img.load("images/PlayerSprites/Player1.png")) {
         cout << "image loaded" << endl;
     }
     
-    int w = img.getWidth();
-    int h = img.getHeight();
+    w = img.getWidth();
+    h = img.getHeight();
+    
     cout << "image width " << w << endl;
     cout << "image height " << h << endl;
     ofColor color = img.getColor(w / 2.0, h / 2.0);
@@ -134,5 +164,16 @@ void Player::setup() {
     ofSetVerticalSync(true);
     
     
+    
+}
+
+    
+
+void Player:: reset(){
+    scale = glm::vec3(1, 1, 1);
+    nEnergy = 5;
+    pos = glm::vec3(ofGetWindowWidth() / 2.0, ofGetWindowHeight() / 2.0, 0);
+    speed = 3.0f;
+    rot=0;
     
 }
