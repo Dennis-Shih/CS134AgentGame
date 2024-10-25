@@ -82,7 +82,7 @@ void Emitter::init() {
     // create an image for sprites being spawned by emitter
     //
     
-    if (image.load("images/Agent.png")) {
+    if (image.load("images/AgentSprites/Agent.png")) {
         imageLoaded = true;
     }
     else {
@@ -100,7 +100,7 @@ void Emitter::init() {
     start();
     
     
-	lifespan = 3000;    // default milliseconds
+	lifespan = 9000;    // default milliseconds
 	
 
 	lastSpawned = 0;
@@ -175,7 +175,7 @@ void Emitter::update() {
 	// traversing at the same time, use an iterator.
 	//
 	while (s != sys->sprites.end()) {
-        if ((s->lifespan != -1 && s->age() > s->lifespan) || s->intersectedPlayer) {
+        if ((s->lifespan != -1 && s->age() > s->lifespan) || s->intersectedParticle || s->intersectedPlayer) {
 			//			cout << "deleting sprite: " << s->name << endl;
             
 			tmp = sys->sprites.erase(s);
@@ -192,10 +192,10 @@ void Emitter::update() {
 	
 }
 
-//move sprite along rotation vector
+
 void Emitter::moveSprite(Sprite *sprite) {
-    
-    sprite->pos -= (sprite->velocity * sprite->speed / ofGetFrameRate()) / 4;
+    sprite->integrate();
+    //sprite->pos -= (sprite->velocity * sprite->speed / ofGetFrameRate()) / 4;
    
 }
 
@@ -208,11 +208,12 @@ void Emitter::spawnSprite() {
 	//sprite.velocity = velocity;
 	sprite.lifespan = lifespan;
 	//sprite.pos = pos;
-    sprite.scale = glm::vec3(3,3,3);
+    sprite.scale = glm::vec3(1,1,1);
     sprite.pos = glm::vec3(ofRandom(ofGetWindowWidth()), ofRandom(ofGetWindowHeight()), 0);
 	sprite.birthtime = ofGetElapsedTimeMillis();
     sprite.rot = ofRandom(360);
     sprite.speed = 200;
+    sprite.proxRadius=sprite.width;
     
 	sys->add(sprite);
 }

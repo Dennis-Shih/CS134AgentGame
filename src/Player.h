@@ -45,12 +45,14 @@ class Player : public Shape {
         float rotDir;
         //keep player from going OOB
         float knockBackMult;
+        //radius for circle proximity collision detection
+        float proxRadius;
     
     
     
         ofImage img;
         ofxFloatSlider sliderScale;
-        ofxToggle shapeToggle;
+        //ofxToggle shapeToggle;
         
         float w;
         float h;
@@ -69,7 +71,7 @@ class Player : public Shape {
         ofColor color = ofColor::blue;
         vector<glm::vec3> verts;
     
-        
+        bool shapeMode;
         bool shotFired;
     
     

@@ -18,7 +18,10 @@ void ofApp::setup(){
     
     em = new Emitter();
     em->pos=glm::vec3(ofGetWindowWidth() / 2.0, ofGetWindowHeight() / 2.0, 0);
-    emitters.push_back(em);
+    
+    em->update();
+    em->setRate(rate);
+    em->setNAgents(nAgents);
     
     pem=new ParticleEmitter();
     pem->pos=player.pos;
@@ -28,11 +31,13 @@ void ofApp::setup(){
     
     gui.setup();
     
+    
     gui.add(player.sliderScale.setup("Player Scale", 1, 0.1, 2));
-    gui.add(player.shapeToggle.setup("Shape Toggle", false));
+    //change to a general toggle in ofapp that sets a bool in player (same for agent)
+    //gui.add(player.shapeToggle.setup("Shape Toggle", false));
+    gui.add(shapeToggle.setup("Shape Toggle", false));
     
-    
-    gui.add(life.setup("Agent Life", emitters[0]->lifespan, 500, 10000));
+    gui.add(life.setup("Agent Life", em->lifespan, 500, 10000));
     gui.add(pSpeed.setup("Player Speed", player.speed, 50, 500));
     gui.add(pRotationSpeed.setup("Player Rotation Speed (deg/Frame)", 1, 1, 10));
     gui.add(agentRotationSpeed.setup("Agent Rotation Speed (deg/Frame)", 1, 1, 10));
@@ -68,61 +73,88 @@ void ofApp::update(){
     }
     timeSeconds=ofGetElapsedTimef();
     //player.nEnergy = nEnergyParam;
+    player.shapeMode=shapeToggle;
     player.speed = pSpeed;
     player.rotationSpeed=pRotationSpeed;
     player.update();
     
+    //particleray
+    pem->pos=player.pos;
+    //pem->setVelocity(player.forward * player.speed*2);
+    pem->setVelocity(player.forward * pem->speed*2);
+    pem->setLifespan(10);
     
+    pem->update();
     
-    for(int em = 0; em < emitters.size(); em++){
-        emitters[em]->update();
-        emitters[em]->setRate(rate);
-        emitters[em]->setNAgents(nAgents);
-        //emitters[em]->rot;
-        //emitters[em]->sys->sprites[em].rotTowardsPlayer(player.pos);
+    if (player.shotFired){
+        pem->spawnParticle(1);
         
-        for (int i = 0; i < emitters[em]->sys->sprites.size(); i++) {
+        player.shotFired=!player.shotFired;
+    }
+    
+   
+    //emitters[em]->rot;
+    //emitters[em]->sys->sprites[em].rotTowardsPlayer(player.pos);
+    em->update();
+    em->setRate(rate);
+    em->setNAgents(nAgents);
+    for (int i = 0; i < em->sys->sprites.size(); i++) {
+        
+        // Get values from sliders and update sprites dynamically
+        //
+        float lf = life;
+        float rs = agentRotationSpeed;
+        
+        em->sys->sprites[i].bShowImage=!shapeToggle;
+        em->setLifespan(lf);
+        
+        em->sys->sprites[i].rotationSpeed = rs;
+        em->sys->sprites[i].rotTowardsPlayer(player.pos);
+        
+        //check if sprite intersect player
+        /*
+         if sprite pos - player pos < playerProximityRadius + sprite proximity radius
+         */
+        
+        
+        //bool collidePlayer =glm::length(glm::vec3(em->sys->sprites[i].pos - player.pos))< (em->sys->sprites[i].proxRadius + player.proxRadius);
+        
+        //bool collidePlayer=player.inside(em->sys->sprites[i].pos);
+        bool collidePlayer=em->sys->sprites[i].inside(player.pos);
+        
+        em->sys->sprites[i].intersectedPlayer=collidePlayer;
+        if (collidePlayer) {
+            explode.play();
             
-            // Get values from sliders and update sprites dynamically
-            //
-            float lf = life;
-            float rs = agentRotationSpeed;
+            if (--player.nEnergy <=0){
+                isGameOver=true;
+                isGameRunning=false;
+                timeSeconds=ofGetElapsedTimef();
+            }
+        }
+        
+        //check if particle intercects agent
+        
+        
+        
+        for (Particle &p: pem->sys->particles){
+            bool collideParticle=em->sys->sprites[i].inside(p.position);
+            em->sys->sprites[i].intersectedParticle=collideParticle;
             
-            
-            emitters[em]->lifespan = lf;
-            
-            emitters[em]->sys->sprites[i].rotationSpeed = rs;
-            emitters[em]->sys->sprites[i].rotTowardsPlayer(player.pos);
-            
-            //check if sprite intersect player
-            bool intersect=emitters[em]->sys->sprites[i].insideTriangle(player.pos);
-            //bool intersect=player.inside(emitters[em]->sys->sprites[i].pos);
-            emitters[em]->sys->sprites[i].intersectedPlayer=intersect;
-            
-            if (intersect) {
+            if (collideParticle) {
+                p.intersected = true;
                 explode.play();
-                
-                
-                if (--player.nEnergy <=0){
-                    isGameOver=true;
-                    isGameRunning=false;
-                    timeSeconds=ofGetElapsedTimef();
-                }
+                break;
+
             }
         }
     }
     
-    //particleray
-    pem->pos=player.pos;
-    pem->setVelocity(player.forward * player.speed*2);
     
-    pem->setLifespan(10);
-    pem->update();
     
-    if (player.shotFired){
-        pem->spawnParticle();
-        player.shotFired=!player.shotFired;
-    }
+    
+    
+    
     
 }
 
@@ -164,10 +196,10 @@ void ofApp::draw(){
     
     player.draw();
     //use emitter for agents
-    for(int em = 0; em < emitters.size(); em++){
-        emitters[em]->draw();
+    //for(int em = 0; em < emitters.size(); em++){
+        em->draw();
         
-    }
+    //}
     pem->draw();
     if (!hideGui){
         gui.draw();
@@ -213,25 +245,17 @@ void ofApp::keyPressed(int key){
                 resetGame();
             }
             
-            /*
-            if (isGameRunning){
-                //shoot particle ray
-                
-                
-                shoot.play();
-            }
-            
-            else*/ isGameRunning=true;
+             isGameRunning=true;
             
             break;
         case 's':
-            
             if (isGameRunning && !player.shotFired){
                 //shoot particle ray
                 //cout << "sdown" << endl;
                 player.shotFired=true;
                 shoot.play();
             }
+            
              
             break;
         case 'h':
@@ -356,8 +380,11 @@ void ofApp::resetGame(){
     player.speed=pSpeed;
     player.nEnergy=nEnergyParam;
     
-    emitters.clear();
+    //emitters.clear();
     setup();
 }
+
+
+
 
 

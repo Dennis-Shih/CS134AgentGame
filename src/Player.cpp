@@ -41,6 +41,7 @@ Player::Player() {
     moveDir = 0;
     rotDir=0;
     rotationSpeed = 0;
+    
     shotFired=false;
 }
 
@@ -55,14 +56,14 @@ void Player::draw() {
     //ofSetColor(color);
     //ofDrawTriangle(verts[0], verts[1], verts[2]);
     
-    if (shapeToggle) {
-         ofScale(sl*100, sl*100);
+    if (shapeMode) {
+         ofScale(sl*10, sl*10);
          
          
          ofDrawTriangle(verts[0], verts[1], verts[2]);
          
      } else {
-         ofScale(sliderScale, sliderScale );
+         ofScale(sl, sl);
          
          img.draw(-img.getWidth()/2, -img.getHeight()/2);
      }
@@ -83,7 +84,7 @@ void Player::draw() {
 }
 
 void Player::update() {
-    
+    proxRadius=w;
     float minX=img.getWidth() / scale.length();
     float maxX=ofGetWindowWidth() - minX;
     float minY=img.getHeight() / scale.length();
@@ -103,14 +104,18 @@ void Player::update() {
     integrate();
     
     if (pos.x < minX) {
-        pos.x += knockBackMult * minX;
+        //pos.x += knockBackMult * minX;
+        pos.x += minX/4;
     } else if (pos.x > maxX) {
-        pos.x -= knockBackMult * minX;
+        //pos.x -= knockBackMult * minX;
+        pos.x -= minX/4;
     }
     if (pos.y < minY){
-       pos.y += knockBackMult * minY;
+       //pos.y += knockBackMult * minY;
+        pos.y += minY/4;
     } else if (pos.y > maxY) {
-        pos.y -= knockBackMult * minY;
+        //pos.y -= knockBackMult * minY;
+        pos.y -= minY/4;
     }
     
 }

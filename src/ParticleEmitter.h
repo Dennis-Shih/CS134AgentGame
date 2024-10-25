@@ -26,6 +26,7 @@ public:
     void setEmitterType(EmitterType t) { type = t; }
     void update();
     void spawnParticle();
+    void spawnParticle(float damping);
     ParticleSystem *sys;
     float rate;         // per sec
     ofVec3f velocity;
@@ -35,6 +36,7 @@ public:
     float lastSpawned;  // ms
     float particleRadius;
     float radius;
+    float speed;
     bool visible;
     bool createdSys;
     EmitterType type;

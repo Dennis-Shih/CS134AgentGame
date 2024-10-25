@@ -4,8 +4,7 @@
 #include "Particle.h"
 
 
-//  Pure Virtual Function Class - must be subclassed to create new forces.
-//
+
 class ParticleForce {
 public:
     virtual void updateForce(Particle *) = 0;

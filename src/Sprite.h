@@ -19,8 +19,7 @@ public:
 		verts.push_back(glm::vec3(0, -20, 0));
 	}
 	
-	// some functions for highlighting when selected
-	//
+	
 	void draw() {
 		if (bShowImage) {
 			ofPushMatrix();
@@ -32,8 +31,7 @@ public:
 		}
 		else
 		{
-			if (bHighlight) ofSetColor(ofColor::white);
-			else ofSetColor(ofColor::yellow);
+			ofSetColor(ofColor::yellow);
 			ofPushMatrix();
 			ofMultMatrix(getTransform());
 			ofDrawTriangle(verts[0], verts[1], verts[2]);
@@ -58,7 +56,7 @@ public:
 
 	virtual bool inside(const glm::vec3 p);
 	
-    
+    void integrate();
     void update();
 	bool insideTriangle(const glm::vec3 p);
     void rotTowardsPlayer(const glm::vec3 p);
@@ -68,27 +66,38 @@ public:
 	void setHighlight(bool state) { bHighlight = state; }
 	bool isSelected() { return bSelected; }
 	bool isHighlight() { return bHighlight; }
-
+    
 
 	bool bHighlight = false;
 	bool bSelected = false;
 	bool bShowImage = false;
     //glm::vec3 forward;
     float speed;
+    glm::vec3 forward = glm::vec3(0, 0, 0);
 	glm::vec3 velocity = glm::vec3(0, 0, 0);
-	//float rotationSpeed = 0.0;
+    glm::vec3 accel = glm::vec3(0, 0, 0);
+    glm::vec3 force = glm::vec3(0, 0, 0);
     float rotationSpeed = 0.0;
+    float rotDir=0;
 	float birthtime = 0; // elapsed time in ms
 	float lifespan = -3;  //  time in ms
 	string name =  "UnammedSprite";
-	float width = 40;
-	float height = 40;
+	float width=100;
+	float height=100;
+    
+    float mass=1.0f;
+    float damping=0.99f;
+    
+    
+    float proxRadius;
+    //for erasing when hit
+    bool intersectedParticle;
     bool intersectedPlayer;
-
 	ofImage spriteImage;
 
 	// default verts for polyline shape if no image on sprite
 	//
 	vector<glm::vec3> verts;
+    
 };
 

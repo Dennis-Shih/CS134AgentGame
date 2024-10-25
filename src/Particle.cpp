@@ -44,7 +44,7 @@ void Particle::integrate() {
     ofVec3f accel = acceleration;    // start with any acceleration already on the particle
     accel += (forces * (1.0 / mass));
     velocity += accel * dt;
-    cout << velocity << endl;
+    
 
     // add a little damping for good measure
     //

@@ -38,6 +38,7 @@ class ofApp : public ofBaseApp{
     
         Player player;
         
+        ofxToggle shapeToggle;
         ofxFloatSlider life;
         ofxFloatSlider pSpeed;
         ofxFloatSlider pRotationSpeed;
@@ -66,5 +67,6 @@ class ofApp : public ofBaseApp{
         float timeSeconds;
         
         void resetGame();
+        
 		
 };

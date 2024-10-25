@@ -36,6 +36,7 @@ void ParticleEmitter::init() {
     radius = 1;
     particleRadius = 1;
     visible = true;
+    speed = 500;
     type = DirectionalEmitter;
     //pos = position;
 }
@@ -86,6 +87,34 @@ void ParticleEmitter::update() {
 
     sys->update();
 }
+void ParticleEmitter::spawnParticle(float damping) {
+    
+
+    float time = ofGetElapsedTimeMillis();
+    
+    
+    // spawn a new particle
+    //
+    Particle particle;
+    
+    
+    particle.position = pos;
+    
+    
+    // other particle attributes
+    //
+    particle.lifespan = lifespan;
+    particle.birthtime = time;
+    particle.radius = particleRadius;
+    particle.velocity=velocity;
+    particle.damping=damping;
+    // add to system
+    //
+    
+    sys->add(particle);
+    lastSpawned = time;
+    
+}
 void ParticleEmitter::spawnParticle() {
     
 
@@ -106,6 +135,7 @@ void ParticleEmitter::spawnParticle() {
     particle.birthtime = time;
     particle.radius = particleRadius;
     particle.velocity=velocity;
+    
     // add to system
     //
     
@@ -113,6 +143,5 @@ void ParticleEmitter::spawnParticle() {
     lastSpawned = time;
     
 }
-
 
 

@@ -7,7 +7,7 @@ void Sprite::rotTowardsPlayer(const glm::vec3 p) {
     glm::vec3 direction = glm::normalize(p - pos);
     if (glm::length(direction) == 0.0f) return;
 
-        glm::vec3 forward = glm::normalize(velocity);
+        //glm::vec3 forward = glm::normalize(velocity);
 
         float ang = glm::degrees(atan2(direction.y, direction.x) - atan2(forward.y, forward.x));
 
@@ -15,24 +15,47 @@ void Sprite::rotTowardsPlayer(const glm::vec3 p) {
         if (ang < -180) ang += 360;
 
         
-            if (ang > 1) {
-                rot -= rotationSpeed;
-            } else if (ang < -1 ){
-                rot += rotationSpeed;
+            if (ang > 10) {
+                
+                //rot -= rotationSpeed;
+                rotDir=-1;
+            } else if (ang < -10){
+                //rot += rotationSpeed;
+                rotDir=1;
             }
+            else rotDir=0;
+        cout << "rotDir:"<<  rotDir << endl;
 
             if (rot > 180.0f) rot -= 360.0f;
             if (rot < -180.0f) rot += 360.0f;
-        /*
+        
        std::cout << "ang: " << ang << std::endl;
        std::cout << "rot: " << rot << std::endl;
-   */
+    
+   
 }
  
-
+void Sprite::integrate(){
+    
+    float dt = ofGetLastFrameTime();
+    pos-=velocity * dt;
+    accel=(1/mass) * force;
+    velocity+=accel *dt;
+    velocity *=damping;
+    
+    rot+=rotationSpeed*rotDir;
+    if (rotDir!=0) {
+        //rot+=rotationSpeed;
+        rotationSpeed+=rotDir/100;
+        
+    } //else
+    rotationSpeed *=damping;
+    
+}
 
 void Sprite::update(){
-    velocity= glm::normalize(glm::vec3(sin(glm::radians(-rot)), cos(glm::radians(-rot)), 0));
+    forward= glm::normalize(glm::vec3(sin(glm::radians(-rot)), cos(glm::radians(-rot)), 0));
+    force = forward * speed;
     
     
 }
