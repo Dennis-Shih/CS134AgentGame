@@ -49,7 +49,7 @@ class Player : public Shape {
         float proxRadius;
     
     
-    
+        vector<ofImage> imgs;
         ofImage img;
         ofxFloatSlider sliderScale;
         //ofxToggle shapeToggle;
@@ -73,6 +73,9 @@ class Player : public Shape {
     
         bool shapeMode;
         bool shotFired;
+        bool isBoosting;
+    
+        float lastSpriteImgTime;
     
     
 };

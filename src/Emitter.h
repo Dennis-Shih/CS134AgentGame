@@ -64,6 +64,8 @@ public:
     bool swapFrame;
     int nAgents;
     
+    float lastSpriteImgTime;
+    
 	//float width, height;
     
    

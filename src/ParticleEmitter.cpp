@@ -53,7 +53,6 @@ void ParticleEmitter::draw() {
             break;
         case SphereEmitter:
         case RadialEmitter:
-                cout << position << endl;
                 
             //ofDrawSphere(position, radius);  // just draw a small sphere as a placeholder
             break;
@@ -121,7 +120,7 @@ void ParticleEmitter::spawn(float time) {
         particle.position.set(pos);
         particle.forces+=particle.velocity*dir.getNormalized();
         particle.color=col;
-        cout << "pos:"<<particle.position << endl;
+        
     }
     break;
     case SphereEmitter:
@@ -138,9 +137,7 @@ void ParticleEmitter::spawn(float time) {
     particle.lifespan = lifespan;
     particle.birthtime = time;
     particle.radius = particleRadius;
-    cout << "span:"<<particle.lifespan << endl;
-    cout << particle.birthtime << endl;
-    cout << "rad:"<<particle.radius << endl;
+    
     // add to system
     //
     sys->add(particle);

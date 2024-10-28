@@ -132,10 +132,10 @@ void ofApp::update(){
          */
         
         
-        //bool collidePlayer =glm::length(glm::vec3(em->sys->sprites[i].pos - player.pos))< (em->sys->sprites[i].proxRadius + player.proxRadius);
+        bool collidePlayer =glm::length(glm::vec3(em->sys->sprites[i].pos - player.pos))< (em->sys->sprites[i].proxRadius + player.proxRadius);
         
         //bool collidePlayer=player.inside(em->sys->sprites[i].pos);
-        bool collidePlayer=em->sys->sprites[i].inside(player.pos);
+        //bool collidePlayer=em->sys->sprites[i].inside(player.pos);
         
         em->sys->sprites[i].intersectedPlayer=collidePlayer;
         if (collidePlayer) {
@@ -181,8 +181,8 @@ void ofApp::draw(){
     
     if (!isGameRunning) {
         //display the game start instructuions
-        ofSetColor(ofColor::gray);
-        ofDrawRectangle(ofGetWindowWidth()/2 - textWndwWidth / 2, ofGetWindowHeight()/2 - textWndwHeight / 2, textWndwWidth, textWndwHeight);
+        //ofSetColor(ofColor::gray);
+        //ofDrawRectangle(ofGetWindowWidth()/2 - textWndwWidth / 2, ofGetWindowHeight()/2 - textWndwHeight / 2, textWndwWidth, textWndwHeight);
         ofSetColor(ofColor::white);
         if (!isGameOver){
             ofDrawBitmapString("Press SPACE to start\nPress H to hide GUI\nPress Q to exit", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/2 - textWndwHeight/ 4);
@@ -199,8 +199,8 @@ void ofApp::draw(){
     ofSetColor(ofColor::white);
     bg.draw(0,0, ofGetWidth(), ofGetHeight());
     
-    ofSetColor(ofColor::gray);
-    ofDrawRectangle(ofGetWindowWidth()/2 - textWndwWidth / 2, ofGetWindowHeight()/10, textWndwWidth, textWndwHeight);
+    //ofSetColor(ofColor::gray);
+    //ofDrawRectangle(ofGetWindowWidth()/2 - textWndwWidth / 2, ofGetWindowHeight()/10, textWndwWidth, textWndwHeight);
     ofSetColor(ofColor::white);
     string energy = ofToString(player.nEnergy);
     ofDrawBitmapString("Energy levels:", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/8);
@@ -217,6 +217,7 @@ void ofApp::draw(){
     ofSetColor(ofColor::white);
     
     player.draw();
+    
     //use emitter for agents
     //for(int em = 0; em < emitters.size(); em++){
     em->draw();

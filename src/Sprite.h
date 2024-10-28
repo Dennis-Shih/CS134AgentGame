@@ -25,6 +25,7 @@ public:
 			ofPushMatrix();
 			ofSetColor(ofColor::white);
 			ofMultMatrix(getTransform());
+            
 			spriteImage.draw(-spriteImage.getWidth() / 2, -spriteImage.getHeight() / 2.0);
             
 			ofPopMatrix();
@@ -90,9 +91,11 @@ public:
     
     
     float proxRadius;
+    
     //for erasing when hit
     bool intersectedParticle;
     bool intersectedPlayer;
+    
     
 	ofImage spriteImage;
 

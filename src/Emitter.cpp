@@ -113,6 +113,7 @@ void Emitter::init() {
 	rate = 1;    // sprites/sec
 	haveChildImage = true;
 	haveImage = false;
+    lastSpriteImgTime=0;
     
 	//velocity = ofVec3f(0, -200, 0);
 	drawable = true;
@@ -164,11 +165,12 @@ void Emitter::update() {
         
 	}
     
+    if (lastSpriteImgTime>=0.1){
+        childImage=imgs[1];
+        lastSpriteImgTime=0;
+    } else childImage=imgs[0];
     
-        
-    
-    swapFrame=!swapFrame;
-    
+    lastSpriteImgTime+=ofGetLastFrameTime();
 
 	// update sprite list
 	//
@@ -190,16 +192,11 @@ void Emitter::update() {
 		else s++;
 	}
 
-	
+    
 	for (int i = 0; i < sys->sprites.size(); i++) {
         
-        /*
-        if (swapFrame){
-            sys->sprites[i].setImage(imgs[1]);
-            
-        } else sys->sprites[i].setImage(imgs[0]);
-        */
-        
+   
+        sys->sprites[i].setImage(childImage);
         sys->sprites[i].update();
 		moveSprite(&sys->sprites[i]);
 	}
@@ -227,7 +224,8 @@ void Emitter::spawnSprite() {
 	sprite.birthtime = ofGetElapsedTimeMillis();
     sprite.rot = ofRandom(360);
     sprite.speed = 200;
-    sprite.proxRadius=sprite.width;
+    sprite.proxRadius=sprite.width/2;
+    
     
 	sys->add(sprite);
 }

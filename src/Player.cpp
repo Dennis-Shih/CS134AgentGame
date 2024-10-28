@@ -41,6 +41,7 @@ Player::Player() {
     moveDir = 0;
     rotDir=0;
     rotationSpeed = 0;
+    lastSpriteImgTime=0;
     
     shotFired=false;
 }
@@ -59,13 +60,19 @@ void Player::draw() {
     if (shapeMode) {
          ofScale(sl*10, sl*10);
          
-         
          ofDrawTriangle(verts[0], verts[1], verts[2]);
          
      } else {
          ofScale(sl, sl);
          
-         img.draw(-img.getWidth()/2, -img.getHeight()/2);
+         if (isBoosting && lastSpriteImgTime>=0.09){
+             imgs[0].draw(-img.getWidth()/2, -img.getHeight()/2);
+             lastSpriteImgTime=0;
+         }
+         else imgs[1].draw(-img.getWidth()/2, -img.getHeight()/2);
+         
+         
+         //img.draw(-img.getWidth()/2, -img.getHeight()/2);
      }
     
     
@@ -84,18 +91,13 @@ void Player::draw() {
 }
 
 void Player::update() {
-    proxRadius=w;
+    proxRadius=w/2;
+    
     float minX=img.getWidth() / scale.length();
     float maxX=ofGetWindowWidth() - minX;
     float minY=img.getHeight() / scale.length();
     float maxY=ofGetWindowHeight() - minY;
-    /*
-    if (rotDir<0) {
-        //left
-        rot-=rotationSpeed;
-        //right
-    } else if (rotDir>0) rot+=rotationSpeed;
-    */
+    
     
     forward= glm::normalize(glm::vec3(sin(glm::radians(-rot)), cos(glm::radians(-rot)), 0));
     force = forward * moveDir * speed;
@@ -117,6 +119,9 @@ void Player::update() {
         //pos.y -= knockBackMult * minY;
         pos.y -= minY/4;
     }
+    
+    isBoosting=(glm::length(accel)!=0);
+    lastSpriteImgTime+=ofGetLastFrameTime();
     
 }
 
@@ -153,6 +158,10 @@ glm::mat4 Player::getTransform() {
 
 void Player::setup() {
     Player();
+    
+    imgs.push_back(ofImage("images/PlayerSprites/Player1.png"));
+    imgs.push_back(ofImage("images/PlayerSprites/Player0.png"));
+    
     if (img.load("images/PlayerSprites/Player1.png")) {
         cout << "image loaded" << endl;
     }
