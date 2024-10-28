@@ -15,22 +15,21 @@ void Sprite::rotTowardsPlayer(const glm::vec3 p) {
         if (ang < -180) ang += 360;
 
         
-            if (ang > 10) {
+            if (ang > 1) {
                 
                 //rot -= rotationSpeed;
                 rotDir=-1;
-            } else if (ang < -10){
+            } else if (ang < -1){
                 //rot += rotationSpeed;
                 rotDir=1;
             }
-            else rotDir=0;
-        cout << "rotDir:"<<  rotDir << endl;
+            //else rotDir=0;
+        
 
             if (rot > 180.0f) rot -= 360.0f;
             if (rot < -180.0f) rot += 360.0f;
         
-       std::cout << "ang: " << ang << std::endl;
-       std::cout << "rot: " << rot << std::endl;
+       
     
    
 }
@@ -56,6 +55,7 @@ void Sprite::integrate(){
 void Sprite::update(){
     forward= glm::normalize(glm::vec3(sin(glm::radians(-rot)), cos(glm::radians(-rot)), 0));
     force = forward * speed;
+    
     
     
 }

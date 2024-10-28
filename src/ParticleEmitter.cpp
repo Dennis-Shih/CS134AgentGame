@@ -38,110 +38,114 @@ void ParticleEmitter::init() {
     visible = true;
     speed = 500;
     type = DirectionalEmitter;
-    //pos = position;
+    groupSize = 1;
+    pos = position;
 }
 
 
 
 void ParticleEmitter::draw() {
     //draw particles
+    if (visible) {
+        switch (type) {
+        case DirectionalEmitter:
+            //ofDrawSphere(position, radius/10);  // just draw a small sphere for point emitters
+            break;
+        case SphereEmitter:
+        case RadialEmitter:
+                cout << position << endl;
+                
+            //ofDrawSphere(position, radius);  // just draw a small sphere as a placeholder
+            break;
+        default:
+            break;
+        }
+    }
     sys->draw();
 }
 void ParticleEmitter::start() {
     started = true;
+    
     lastSpawned = ofGetElapsedTimeMillis();
+    
 }
 
 void ParticleEmitter::stop() {
     started = false;
+    fired = false;
 }
 void ParticleEmitter::update() {
-    if (!started) return;
 
     float time = ofGetElapsedTimeMillis();
+    if (oneShot && started) {
+        if (!fired) {
+
+            // spawn a new particle(s)
+            //
+            for (int i = 0; i < groupSize; i++)
+                spawn(time);
+
+            lastSpawned = time;
+        }
+        fired = true;
+        stop();
+    }
+
+    else if (((time - lastSpawned) > (1000.0 / rate)) && started) {
+
+        // spawn a new particle(s)
+        //
+        for (int i= 0; i < groupSize; i++)
+            spawn(time);
     
-    
-    
-    /*
-    Particle particle;
-    
-    
-    particle.position = pos;
-    cout << position << endl;
-    */
-    
-    // other particle attributes
-    //
-    /*
-    particle.lifespan = lifespan;
-    particle.birthtime = time;
-    particle.radius = particleRadius;
-    particle.velocity=velocity;
-    */
-    // add to system
-    //
-    /*
-    sys->add(particle);
-    lastSpawned = time;
-    */
+        lastSpawned = time;
+    }
 
     sys->update();
 }
-void ParticleEmitter::spawnParticle(float damping) {
-    
 
-    float time = ofGetElapsedTimeMillis();
-    
-    
-    // spawn a new particle
-    //
+void ParticleEmitter::spawn(float time) {
+
     Particle particle;
-    
-    
-    particle.position = pos;
-    
-    
+
+    // set initial velocity and position
+    // based on emitter type
+    //
+    switch (type) {
+    case RadialEmitter:
+    {
+        ofColor col(255,0,0);
+        ofVec3f dir = ofVec3f(ofRandom(-1, 1), ofRandom(-1, 1), 0);
+        float speed = velocity.length();
+        particle.velocity = dir.getNormalized() * speed;
+        particle.position.set(pos);
+        particle.forces+=particle.velocity*dir.getNormalized();
+        particle.color=col;
+        cout << "pos:"<<particle.position << endl;
+    }
+    break;
+    case SphereEmitter:
+        break;
+    case DirectionalEmitter:
+        particle.velocity = velocity;
+        particle.position.set(pos);
+            particle.damping=1;
+        break;
+    }
+
     // other particle attributes
     //
     particle.lifespan = lifespan;
     particle.birthtime = time;
     particle.radius = particleRadius;
-    particle.velocity=velocity;
-    particle.damping=damping;
+    cout << "span:"<<particle.lifespan << endl;
+    cout << particle.birthtime << endl;
+    cout << "rad:"<<particle.radius << endl;
     // add to system
     //
-    
     sys->add(particle);
-    lastSpawned = time;
-    
 }
-void ParticleEmitter::spawnParticle() {
-    
 
-    float time = ofGetElapsedTimeMillis();
-    
-    
-    // spawn a new particle
-    //
-    Particle particle;
-    
-    
-    particle.position = pos;
-    
-    
-    // other particle attributes
-    //
-    particle.lifespan = lifespan;
-    particle.birthtime = time;
-    particle.radius = particleRadius;
-    particle.velocity=velocity;
-    
-    // add to system
-    //
-    
-    sys->add(particle);
-    lastSpawned = time;
-    
-}
+
 
 

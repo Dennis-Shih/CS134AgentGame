@@ -23,10 +23,19 @@ void ofApp::setup(){
     em->setRate(rate);
     em->setNAgents(nAgents);
     
+    
     pem=new ParticleEmitter();
     pem->pos=player.pos;
-    pem->start();
+    
+    
    
+    radialForce = new ImpulseRadialForce(100.0);
+    explEm.setEmitterType(RadialEmitter);
+    explEm.sys->addForce(radialForce);
+    explEm.setOneShot(true);
+    explEm.pos=player.pos;
+    
+    explEm.setGroupSize(50);
     
     
     gui.setup();
@@ -48,12 +57,13 @@ void ofApp::setup(){
     
     
     explode.load("audio/explode.wav");
+    explode.setVolume(0.5);
     bgm.load("audio/bgm.wav");
     bgm.setVolume(0.2);
     bgm.setLoop(true);
     bgm.play();
     shoot.load("audio/shoot.mp3");
-    shoot.setVolume(1.2);
+    
     shoot.setLoop(false);
     
     textWndwWidth = 200;
@@ -83,18 +93,23 @@ void ofApp::update(){
     //pem->setVelocity(player.forward * player.speed*2);
     pem->setVelocity(player.forward * pem->speed*2);
     pem->setLifespan(10);
-    
+    pem->setOneShot(true);
     pem->update();
     
     if (player.shotFired){
-        pem->spawnParticle(1);
         
-        player.shotFired=!player.shotFired;
+        //pem->spawnParticle(1);
+        
+        //player.shotFired=!player.shotFired;
     }
     
+    explEm.setLifespan(5);
+    explEm.setVelocity(ofVec3f(10, 10, 0));
+    
+    explEm.setParticleRadius(15);
+
+    explEm.update();
    
-    //emitters[em]->rot;
-    //emitters[em]->sys->sprites[em].rotTowardsPlayer(player.pos);
     em->update();
     em->setRate(rate);
     em->setNAgents(nAgents);
@@ -143,6 +158,9 @@ void ofApp::update(){
             
             if (collideParticle) {
                 p.intersected = true;
+                //explosion
+                explEm.pos=p.position;
+                explEm.start();
                 explode.play();
                 break;
 
@@ -187,6 +205,10 @@ void ofApp::draw(){
     string energy = ofToString(player.nEnergy);
     ofDrawBitmapString("Energy levels:", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/8);
     ofDrawBitmapString(energy, ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/7);
+    ofDrawBitmapString(" / ", ofGetWindowWidth()/2 - textWndwWidth /3, ofGetWindowHeight()/7);
+    float maxEnergy=nEnergyParam;
+    ofDrawBitmapString(maxEnergy, ofGetWindowWidth()/2- textWndwWidth /4, ofGetWindowHeight()/7);
+    
     ofDrawBitmapString("Time elapsed (s):", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/6);
     ofDrawBitmapString(timeSeconds, ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/5.5);
     ofDrawBitmapString("Framerate:", ofGetWindowWidth()/2 - textWndwWidth / 2.5, ofGetWindowHeight()/4);
@@ -197,10 +219,11 @@ void ofApp::draw(){
     player.draw();
     //use emitter for agents
     //for(int em = 0; em < emitters.size(); em++){
-        em->draw();
+    em->draw();
         
     //}
     pem->draw();
+    explEm.draw();
     if (!hideGui){
         gui.draw();
     }
@@ -249,10 +272,12 @@ void ofApp::keyPressed(int key){
             
             break;
         case 's':
-            if (isGameRunning && !player.shotFired){
+            if (isGameRunning){
                 //shoot particle ray
                 //cout << "sdown" << endl;
-                player.shotFired=true;
+                pem->start();
+                
+                //player.shotFired=true;
                 shoot.play();
             }
             

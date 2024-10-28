@@ -41,12 +41,7 @@ public:
 	// virtuals - can overloaded
 	virtual void moveSprite(Sprite *);
 	virtual void spawnSprite();
-    /*
-	virtual bool inside(glm::vec3 p) {
-		glm::vec3 s = glm::inverse(getTransform()) * glm::vec4(p, 1);
-		return (s.x > -width / 2 && s.x < width / 2 && s.y > -height / 2 && s.y < height / 2);
-	}
-    */
+    
 
 	SpriteList *sys;
     
@@ -58,11 +53,15 @@ public:
 	float lastSpawned;
     
 	ofImage childImage;
+    
+    vector<ofImage> imgs;
 	ofImage image;
     bool imageLoaded;
 	bool drawable;
 	bool haveChildImage;
 	bool haveImage;
+    
+    bool swapFrame;
     int nAgents;
     
 	//float width, height;

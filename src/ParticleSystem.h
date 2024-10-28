@@ -8,6 +8,8 @@
 class ParticleForce {
 public:
     virtual void updateForce(Particle *) = 0;
+    bool applyOnce = false;
+    bool applied = false;
 };
 
 class ParticleSystem {
@@ -50,3 +52,14 @@ public:
     void updateForce(Particle *);
     void set(const ofVec3f noise);
 };
+
+class ImpulseRadialForce : public ParticleForce {
+    float magnitude;
+    float height;
+public:
+    ImpulseRadialForce(float magnitude);
+    void updateForce(Particle *);
+    void set(float val);
+    void setHeight(float h);
+};
+

@@ -35,8 +35,10 @@ class ofApp : public ofBaseApp{
         Emitter* em = NULL;
         //particle ray and explosion, also use for agents to be moved by forces
         ParticleEmitter* pem=NULL;
-    
+        ParticleEmitter explEm;
         Player player;
+    
+        ImpulseRadialForce *radialForce;
         
         ofxToggle shapeToggle;
         ofxFloatSlider life;

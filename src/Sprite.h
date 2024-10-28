@@ -93,6 +93,7 @@ public:
     //for erasing when hit
     bool intersectedParticle;
     bool intersectedPlayer;
+    
 	ofImage spriteImage;
 
 	// default verts for polyline shape if no image on sprite

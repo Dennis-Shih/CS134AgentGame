@@ -95,3 +95,25 @@ void TurbulenceForce::set(const ofVec3f min, const ofVec3f max){
 }
 
 
+ImpulseRadialForce::ImpulseRadialForce(float magnitude) {
+    this->magnitude = magnitude;
+    applyOnce = true;
+    height=1;
+}
+
+void ImpulseRadialForce::updateForce(Particle * particle) {
+
+    // we basically create a random direction for each particle
+    // the force is only added once after it is triggered.
+    //
+    ofVec3f dir = ofVec3f(ofRandom(-1, 1), ofRandom(-height, height), ofRandom(-1, 1));
+    particle->forces += dir.getNormalized() * magnitude;
+}
+void ImpulseRadialForce::set(float f){
+    magnitude=f;
+}
+void ImpulseRadialForce::setHeight(float h){
+    height=h;
+}
+
+

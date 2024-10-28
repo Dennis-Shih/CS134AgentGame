@@ -31,6 +31,7 @@ void SpriteList::update() {
 	if (sprites.size() == 0) return;
 	vector<Sprite>::iterator s = sprites.begin();
 	vector<Sprite>::iterator tmp;
+    
 
     
 	//
@@ -64,6 +65,7 @@ void SpriteList::update() {
 void SpriteList::draw() {
 	for (int i = 0; i < sprites.size(); i++) {
 		sprites[i].draw();
+        
 	}
 }
 
@@ -87,16 +89,19 @@ void Emitter::init() {
     }
     else {
         cout << "Can't open image file" << endl;
-        ofExit();
+        //ofExit();
     }
     
+    imgs.push_back(ofImage("images/AgentSprites/Agent.png"));
+    imgs.push_back(ofImage("images/AgentSprites/Agent1.png"));
     
     
 
     ofSetBackgroundColor(ofColor::black);
     
     drawable = true;
-    setChildImage(image);
+    setChildImage(imgs[0]);
+    //setChildImage(image);
     start();
     
     
@@ -120,21 +125,10 @@ void Emitter::init() {
 //
 //
 void Emitter::draw() {
-    /*
-	if (drawable) {
-
-		if (haveImage) {
-			image.draw(-image.getWidth() / 2.0 + pos.x, -image.getHeight() / 2.0 + pos.y);
-		}
-		else {
-            isSelected ? ofSetColor(ofColor::green) : ofSetColor(0, 0, 200);
-			ofDrawRectangle(-width / 2 + pos.x, -height / 2 + pos.y, width, height);
-		}
-	}
-    */
-
+    
 	// draw sprite system
 	//
+    
 	sys->draw();
 }
 
@@ -147,6 +141,12 @@ void Emitter::update() {
         cout << "not started" << endl;
         return;
     }
+    
+    
+    
+     
+    
+    
 	float time = ofGetElapsedTimeMillis();
 
 	if ((time - lastSpawned) > (1000.0 / rate)) {
@@ -163,6 +163,12 @@ void Emitter::update() {
         
         
 	}
+    
+    
+        
+    
+    swapFrame=!swapFrame;
+    
 
 	// update sprite list
 	//
@@ -186,6 +192,14 @@ void Emitter::update() {
 
 	
 	for (int i = 0; i < sys->sprites.size(); i++) {
+        
+        /*
+        if (swapFrame){
+            sys->sprites[i].setImage(imgs[1]);
+            
+        } else sys->sprites[i].setImage(imgs[0]);
+        */
+        
         sys->sprites[i].update();
 		moveSprite(&sys->sprites[i]);
 	}
