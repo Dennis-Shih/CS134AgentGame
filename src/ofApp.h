@@ -50,16 +50,21 @@ class ofApp : public ofBaseApp{
         ofxIntField nEnergyParam;
         ofxIntSlider level;
     
+    
         glm::vec3 mousePrevPos;
         //true when game started, false on title/game over until space pressed
         bool isGameRunning;
         bool isGameOver;
         bool hideGui;
     
-        bool spriteAlt;
+        //bool spriteAlt;
+    
+        //sound
         ofSoundPlayer bgm;
         ofSoundPlayer explode;
         ofSoundPlayer shoot;
+        ofSoundPlayer forAccel;
+        ofSoundPlayer backAccel;
         ofSoundStream stream;
     
         ofImage bg;

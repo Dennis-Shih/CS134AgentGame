@@ -22,6 +22,7 @@ void SpriteList::remove(int i) {
 }
 
 
+
 //  Update the SpriteSystem by checking which sprites have exceeded their
 //  lifespan (and deleting).  Also the sprite is moved to it's next
 //  location based on velocity and direction.

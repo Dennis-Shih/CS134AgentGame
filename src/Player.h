@@ -27,8 +27,7 @@ class Player : public Shape {
         glm::vec3 forward;
         
         int nEnergy;
-        
-        //use this for max speed
+        int maxEnergy;
         
         //player movement stuff
         float speed;
@@ -65,6 +64,8 @@ class Player : public Shape {
         void update();
     
         void integrate();
+    
+        void gainEn();
         //reset player to init state for new game
         void reset();
     

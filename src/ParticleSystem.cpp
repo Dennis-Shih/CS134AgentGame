@@ -13,6 +13,10 @@ void ParticleSystem::addForce(ParticleForce *f) {
 void ParticleSystem::remove(int i) {
     particles.erase(particles.begin() + i);
 }
+void ParticleSystem::removeAll() {
+    particles.erase(particles.begin(), particles.end());
+    
+}
 
 void ParticleSystem::update() {
     // check if empty and just return

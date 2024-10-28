@@ -54,8 +54,9 @@ void ofApp::setup(){
     gui.add(rate.setup("Rate", 1, 1, 10));
     
     gui.add(nEnergyParam.setup("Default Energy Level", player.nEnergy, 1, 10));
-    
-    
+    gui.add(level.setup("Difficulty Level", 1, 1, 3));
+    player.maxEnergy=nEnergyParam;
+    //load sounds
     explode.load("audio/explode.wav");
     explode.setVolume(0.5);
     bgm.load("audio/bgm.wav");
@@ -63,7 +64,8 @@ void ofApp::setup(){
     bgm.setLoop(true);
     bgm.play();
     shoot.load("audio/shoot.mp3");
-    
+    forAccel.load("audio/forwardaccel.mp3");
+    backAccel.load("audio/backwardaccel.mp3");
     shoot.setLoop(false);
     
     textWndwWidth = 200;
@@ -96,13 +98,7 @@ void ofApp::update(){
     pem->setOneShot(true);
     pem->update();
     
-    if (player.shotFired){
-        
-        //pem->spawnParticle(1);
-        
-        //player.shotFired=!player.shotFired;
-    }
-    
+   
     explEm.setLifespan(5);
     explEm.setVelocity(ofVec3f(10, 10, 0));
     
@@ -150,8 +146,6 @@ void ofApp::update(){
         
         //check if particle intercects agent
         
-        
-        
         for (Particle &p: pem->sys->particles){
             bool collideParticle=em->sys->sprites[i].inside(p.position);
             em->sys->sprites[i].intersectedParticle=collideParticle;
@@ -162,6 +156,9 @@ void ofApp::update(){
                 explEm.pos=p.position;
                 explEm.start();
                 explode.play();
+                //gain energy level (unless at max)
+                player.gainEn();
+                
                 break;
 
             }
@@ -244,12 +241,12 @@ void ofApp::keyPressed(int key){
         case OF_KEY_UP:
            
             player.moveDir = 1;
-        
+            if (!forAccel.isPlaying()) forAccel.play();
             
             break;
         case OF_KEY_DOWN:
             player.moveDir = -1;
-            
+            if (!backAccel.isPlaying()) backAccel.play();
             
             break;
         case OF_KEY_LEFT:
@@ -311,6 +308,8 @@ void ofApp::keyReleased(int key){
     switch (key) {
         case OF_KEY_UP:
         case OF_KEY_DOWN:
+            forAccel.stop();
+            backAccel.stop();
             player.moveDir = 0;
             break;
         case OF_KEY_LEFT:
@@ -402,10 +401,10 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 void ofApp::resetGame(){
     ofResetElapsedTimeCounter();
     player.reset();
-    
+    //em->sys->e
     player.speed=pSpeed;
     player.nEnergy=nEnergyParam;
-    
+    explEm.sys->removeAll();
     //emitters.clear();
     setup();
 }

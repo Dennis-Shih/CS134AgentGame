@@ -181,12 +181,19 @@ void Player::setup() {
     
 }
 
+void Player::gainEn(){
     
+    if(nEnergy<maxEnergy){
+        nEnergy++;
+    }
+     
+}
 
 void Player:: reset(){
     scale = glm::vec3(1, 1, 1);
     nEnergy = 5;
     pos = glm::vec3(ofGetWindowWidth() / 2.0, ofGetWindowHeight() / 2.0, 0);
+    velocity=glm::vec3(0,0,0);
     speed = 3.0f;
     rot=0;
     

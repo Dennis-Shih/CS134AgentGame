@@ -17,6 +17,7 @@ public:
     void add(const Particle &);
     void addForce(ParticleForce *);
     void remove(int);
+    void removeAll();
     void update();
     int removeNear(const ofVec3f & point, float dist);
     void draw();
