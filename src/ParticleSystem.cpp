@@ -63,42 +63,6 @@ void ParticleSystem::draw() {
 }
 
 
-
-
-void GravityForce::updateForce(Particle * Particle) {
-    //
-    // f = mg
-    //
-    Particle->forces += gravity * Particle->mass;
-}
-
-void GravityForce::setForce(float f){
-    gravity = ofVec3f(0,f,0);
-}
-
-// Turbulence Force Field
-//
-TurbulenceForce::TurbulenceForce(const ofVec3f &min, const ofVec3f &max) {
-    tmin = min;
-    tmax = max;
-}
-
-void TurbulenceForce::updateForce(Particle * Particle) {
-    //
-    // We are going to add a little "noise" to a particles
-    // forces to achieve a more natual look to the motion
-    //
-    Particle->forces.x += ofRandom(tmin.x, tmax.x);
-    Particle->forces.y += ofRandom(tmin.y, tmax.y);
-    
-}
-
-void TurbulenceForce::set(const ofVec3f min, const ofVec3f max){
-    tmin=min;
-    tmax=max;
-}
-
-
 ImpulseRadialForce::ImpulseRadialForce(float magnitude) {
     this->magnitude = magnitude;
     applyOnce = true;

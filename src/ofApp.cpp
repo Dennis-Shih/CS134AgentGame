@@ -14,14 +14,13 @@ void ofApp::setup(){
     player.setup();
     
     
-    //agent.setup();
+    
     
     em = new Emitter();
     em->pos=glm::vec3(ofGetWindowWidth() / 2.0, ofGetWindowHeight() / 2.0, 0);
     
-    em->update();
-    em->setRate(rate);
-    em->setNAgents(nAgents);
+    
+    
     
     
     pem=new ParticleEmitter();
@@ -54,9 +53,20 @@ void ofApp::setup(){
     gui.add(rate.setup("Rate", 1, 1, 10));
     
     gui.add(nEnergyParam.setup("Default Energy Level", player.nEnergy, 1, 10));
-    gui.add(level.setup("Difficulty Level", 1, 1, 3));
+    
+    gui.add(levelSlider.setup("Difficulty Level", 1, 1, 3));
+    
+    
+    agentRotDefault=agentRotationSpeed;
+    nAgentsDefault=nAgents;
+    rateDefault=rate;
+    
+    
+    
+    
     player.maxEnergy=nEnergyParam;
     //load sounds
+    collide.load("audio/collide.mp3");
     explode.load("audio/explode.wav");
     explode.setVolume(0.5);
     bgm.load("audio/bgm.wav");
@@ -67,6 +77,7 @@ void ofApp::setup(){
     forAccel.load("audio/forwardaccel.mp3");
     backAccel.load("audio/backwardaccel.mp3");
     shoot.setLoop(false);
+    
     
     textWndwWidth = 200;
     textWndwHeight = 200;
@@ -83,6 +94,11 @@ void ofApp::update(){
         ofClear(0, 0, 0);
         return;
     }
+    
+    agentRotationSpeed=levelSlider;
+    nAgents=levelSlider;
+    rate=levelSlider;
+    
     timeSeconds=ofGetElapsedTimef();
     //player.nEnergy = nEnergyParam;
     player.shapeMode=shapeToggle;
@@ -123,19 +139,13 @@ void ofApp::update(){
         em->sys->sprites[i].rotTowardsPlayer(player.pos);
         
         //check if sprite intersect player
-        /*
-         if sprite pos - player pos < playerProximityRadius + sprite proximity radius
-         */
-        
         
         bool collidePlayer =glm::length(glm::vec3(em->sys->sprites[i].pos - player.pos))< (em->sys->sprites[i].proxRadius + player.proxRadius);
         
-        //bool collidePlayer=player.inside(em->sys->sprites[i].pos);
-        //bool collidePlayer=em->sys->sprites[i].inside(player.pos);
         
         em->sys->sprites[i].intersectedPlayer=collidePlayer;
         if (collidePlayer) {
-            explode.play();
+            collide.play();
             
             if (--player.nEnergy <=0){
                 isGameOver=true;

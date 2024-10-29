@@ -48,8 +48,12 @@ class ofApp : public ofBaseApp{
         ofxFloatSlider rate;
         ofxIntField nAgents;
         ofxIntField nEnergyParam;
-        ofxIntSlider level;
-    
+        ofxIntSlider levelSlider;
+        
+        //float level=1;
+        float agentRotDefault;
+        float rateDefault;
+        float nAgentsDefault;
     
         glm::vec3 mousePrevPos;
         //true when game started, false on title/game over until space pressed
@@ -61,6 +65,7 @@ class ofApp : public ofBaseApp{
     
         //sound
         ofSoundPlayer bgm;
+        ofSoundPlayer collide;
         ofSoundPlayer explode;
         ofSoundPlayer shoot;
         ofSoundPlayer forAccel;
